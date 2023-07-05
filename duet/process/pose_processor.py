@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from numpy import genfromtxt
 from tqdm import tqdm
 from duet.const import const
+import pdb
 import glob
 
 
@@ -31,13 +32,12 @@ class PoseProcessor:
 
             for combo in const.POINT_COMBO:
                 frame_angles.append(
-                    self.get_angle(get_point(combo[0]), get_point(combo[1])))
+                    self._get_angle(get_point(combo[0]), get_point(combo[1])))
 
             # hand_pt = get_hand_kpt(d)
             # thumb_pt = get_thumb_kpt(d)
 
             # thetas = extract_angles(pt2, pt3, pt4, hand_pt, thumb_pt)
-            thetas = frame_angles
             self.theta_list.append(frame_angles)
         self.theta_list = np.array(self.theta_list)
 
@@ -63,14 +63,11 @@ class PoseProcessor:
             smoothed_thetas.append(np.convolve(tl[:, i], kernel, mode='same'))
 
         smoothed_thetas = np.vstack(smoothed_thetas)
-        print(smoothed_thetas.shape)
         data = smoothed_thetas[:]
+        return np.arange(len(data[0])) / const.FRAMERATE
 
-        t = np.arange(len(data[0])) / const.FRAMERATE
-
-    def _read_files(self, n: int):
-
-        numstring = f"{n:04d}"
+    def _readfile(self, n: int):
+        numstring = f"{n:012d}"
         strp_folder = self.folder.split("/")[-1]
         filename = self.folder + \
             f"/{strp_folder}_" + numstring + "_keypoints.json"
