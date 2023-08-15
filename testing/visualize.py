@@ -507,6 +507,8 @@ def bus_driver_steering(robot):
 	elbow = []
 	wrist1 = []
 	wrist2 = []
+	wrist3 = []
+	gripper = []
 	offset = 0
 	for x in np.arange(0,6*np.pi, np.pi/8):
 		pan.append(np.pi/10*math.cos(x) - np.pi/10)
@@ -514,6 +516,8 @@ def bus_driver_steering(robot):
 		elbow.append(np.pi/30*math.cos(2*x - np.pi) - 2*np.pi/3)
 		wrist1.append(np.pi/20*math.cos(x + np.pi) + 3*np.pi/2)
 		wrist2.append(3*np.pi/2)
+		wrist3.append(-np.pi/4*math.cos(x))
+		gripper.append(0.5)
 		if x%np.pi == 0:
 			offset += np.pi
 	for x in np.arange(6*np.pi, 10*np.pi, np.pi/8):
@@ -522,12 +526,16 @@ def bus_driver_steering(robot):
 		elbow.append(np.pi/30*math.cos(2*x - np.pi) - 2*np.pi/3)
 		wrist1.append(np.pi/20*math.cos(x + np.pi/2) + 3.5*np.pi/2.5)
 		wrist2.append(3*np.pi/2)
+		wrist3.append(-np.pi/4*x)
+		gripper.append(0.5)
 	robot.animate(cfg_trajectory={
 		'shoulder_pan_joint': pan,
 		'shoulder_lift_joint' : lift,
 		'elbow_joint' : elbow,
 		'wrist_2_joint' : wrist2,
-		'wrist_1_joint' : wrist1}, loop_time=4)
+		'wrist_1_joint' : wrist1,
+		'wrist_3_joint' : wrist3,
+		'robotiq_85_left_knuckle_joint' : gripper}, loop_time=4)
 
 def bus_driver_lever(robot):
 	lift = []
@@ -543,10 +551,96 @@ def bus_driver_lever(robot):
 		'shoulder_lift_joint' : lift,
 		'elbow_joint' : elbow,
 		'wrist_2_joint' : wrist2,
-		'wrist_1_joint' : wrist1}, loop_time=7)
+		'wrist_1_joint' : wrist1}, loop_time=4)
+
+def yoga_right_overhead(robot):
+	gripper = []
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	for x in np.arange(0, 2*np.pi, np.pi/8):
+		lift.append(np.pi/96*math.cos(x) - 3*np.pi/4)
+		elbow.append(np.pi/96*math.cos(x) - np.pi/4)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		gripper.append(1)
+	robot.animate(cfg_trajectory={
+		'shoulder_lift_joint' : lift,
+		'elbow_joint' : elbow,
+		'wrist_2_joint' : wrist2,
+		'wrist_1_joint' : wrist1,
+		'robotiq_85_left_knuckle_joint' : gripper}, loop_time=2)
+
+def screw_lightbulb(robot):
+	gripper = []
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	wrist3 = []
+	offset = 0
+	for x in np.arange(0, 8*np.pi, np.pi/8):
+		lift.append(-np.pi/8)
+		elbow.append(-np.pi/3)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(np.pi/6*math.cos(x - offset))
+		gripper.append(0.25*math.cos(x-offset))
+		if x%np.pi == 0:
+			offset += np.pi
+	robot.animate(cfg_trajectory={
+		'shoulder_lift_joint' : lift,
+		'elbow_joint' : elbow,
+		'wrist_2_joint' : wrist2,
+		'wrist_1_joint' : wrist1,
+		'wrist_3_joint' : wrist3,
+		'robotiq_85_left_knuckle_joint' : gripper}, loop_time=4)
+
+def hammer_wall(robot):
+	gripper = []
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	wrist3 = []
+	for x in np.arange(0, 8*np.pi, np.pi/8):
+		lift.append(np.pi/8)
+		elbow.append(np.pi/6*math.cos(x)-np.pi/2)
+		wrist1.append(5*np.pi/4)
+		wrist2.append(3*np.pi/2)
+		gripper.append(0.5)
+	robot.animate(cfg_trajectory={
+		'shoulder_lift_joint' : lift,
+		'elbow_joint' : elbow,
+		'wrist_2_joint' : wrist2,
+		'wrist_1_joint' : wrist1,
+		'robotiq_85_left_knuckle_joint' : gripper}, loop_time=4)
+
+def wrench(robot):
+	gripper = []
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	pan = []
+	for x in np.arange(0, 8*np.pi, np.pi/8):
+		lift.append(-np.pi/3)
+		elbow.append(2*np.pi/3)
+		wrist1.append(7*np.pi/6)
+		wrist2.append(3*np.pi/2)
+		gripper.append(0.5)
+		pan.append(np.pi/10*math.cos(x))
+	robot.animate(cfg_trajectory={
+		'shoulder_lift_joint' : lift,
+		'shoulder_pan_joint' : pan,
+		'elbow_joint' : elbow,
+		'wrist_2_joint' : wrist2,
+		'wrist_1_joint' : wrist1,
+		'robotiq_85_left_knuckle_joint' : gripper}, loop_time=4)
 			
 def main():
-    robot = URDF.load('/home/shreyaganti/urdfpy/tests/data/ur5/ur5.urdf')
+    robot = URDF.load('/home/shreyaganti/DUET/ur5/ur_with_gripper.xacro')
     #painter_vertical(robot)
     #painter_dip_brush(robot)
     #painter_vertical_dip(robot)
@@ -568,9 +662,14 @@ def main():
     #brick_layer(robot)
     #bartender_shaking(robot)
     #bartender_pouring(robot)
+
+    bus_driver_steering(robot)
+    #bus_driver_lever(robot)
     
-    #bus_driver_steering(robot)
-    bus_driver_lever(robot)
+    #yoga_right_overhead(robot)
+    #screw_lightbulb(robot)
+    #hammer_wall(robot)
+    #wrench(robot)
     
     #NEED TO DO:
     #changing lengths and angles of primitives (raking at different lengths and at different places)
