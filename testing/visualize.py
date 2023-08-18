@@ -623,21 +623,218 @@ def wrench(robot):
 	elbow = []
 	wrist1 = []
 	wrist2 = []
+	wrist3 = []
 	pan = []
+	offset = 0
+	reset = False
 	for x in np.arange(0, 8*np.pi, np.pi/8):
-		lift.append(-np.pi/3)
-		elbow.append(2*np.pi/3)
-		wrist1.append(7*np.pi/6)
+		if x!=0 and x%(2*np.pi)==0:
+			offset += 2*np.pi
+			reset = False
+		elbow.append(np.pi/24*math.cos(x) + 2*np.pi/3)
+		wrist1.append(10*np.pi/9)
 		wrist2.append(3*np.pi/2)
-		gripper.append(0.5)
+		wrist3.append(np.pi/4*math.cos(x))
+		gripper.append(0.25*math.cos(x))
 		pan.append(np.pi/10*math.cos(x))
+		if x!=0 and x%np.pi==0 and x%(2*np.pi)!=0:
+			reset = True
+		if reset:
+			if x-offset - 3*np.pi/2 <0:
+				lift.append(np.pi/6*math.cos(2*x) - 1.29)
+			else:
+				lift.append(np.pi/8*math.cos(2*x) - 1.41)
+		else:
+			reset = False
+			lift.append(np.pi/24*math.cos(x - np.pi) - np.pi/3.5)
 	robot.animate(cfg_trajectory={
 		'shoulder_lift_joint' : lift,
 		'shoulder_pan_joint' : pan,
 		'elbow_joint' : elbow,
 		'wrist_2_joint' : wrist2,
 		'wrist_1_joint' : wrist1,
+		'wrist_3_joint' : wrist3,
 		'robotiq_85_left_knuckle_joint' : gripper}, loop_time=4)
+
+def dust_shelf(robot):
+	gripper = []
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	pan = []
+	for x in np.arange(0,8*np.pi, np.pi/8):
+		elbow.append(np.pi/8)
+		wrist1.append(4*np.pi/3)
+		wrist2.append(np.pi/6*math.cos(2*x) - np.pi/2)
+		gripper.append(0.5)
+		pan.append(np.pi/4*math.cos(x/12))
+		lift.append(-np.pi/3)
+	robot.animate(cfg_trajectory={
+		'shoulder_lift_joint' : lift,
+		'shoulder_pan_joint' : pan,
+		'elbow_joint' : elbow,
+		'wrist_2_joint' : wrist2,
+		'wrist_1_joint' : wrist1,
+		'robotiq_85_left_knuckle_joint' : gripper}, loop_time=2)
+
+def pick_fruit(robot):
+	gripper = []
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	wrist3 = []
+	pan = []
+	
+	#FRUIT 1
+	#twist
+	for x in np.arange(0,np.pi, np.pi/8):
+		elbow.append(np.pi/8)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(np.pi/3*math.cos(2*x))
+		gripper.append(0.5)
+		pan.append(0)
+		lift.append(-np.pi/3)
+	#pluck
+	for x in np.arange(0,2*np.pi, np.pi/8):
+		elbow.append(-np.pi/8)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(np.pi/3)
+		gripper.append(0.5)
+		pan.append(0)
+		lift.append(-np.pi/4)
+	
+	#move to basket
+	for x in np.arange(0,np.pi, np.pi/8):
+		elbow.append(19*np.pi/48*math.cos(x-np.pi) + 13*np.pi/48)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(0)
+		gripper.append(0.5)
+		pan.append(0)
+		lift.append(np.pi/24*math.cos(x) - 7*np.pi/24)
+	
+	#drop in basket
+	for x in np.arange(0,2*np.pi, np.pi/8):
+		elbow.append(2*np.pi/3)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(0)
+		gripper.append(0)
+		pan.append(0)
+		lift.append(-np.pi/3)
+	
+	#FRUIT 2
+	#go to fruit
+	for x in np.arange(0,2*np.pi, np.pi/8):
+		elbow.append(np.pi/3*math.cos(0.5*x) + np.pi/3)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(0)
+		gripper.append(0)
+		pan.append(0)
+		lift.append(np.pi/12*math.cos(0.5*x) - 5*np.pi/12)
+	#twist
+	for x in np.arange(0,np.pi, np.pi/8):
+		elbow.append(0)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(np.pi/3*math.cos(2*x))
+		gripper.append(0.5)
+		pan.append(0)
+		lift.append(-np.pi/2)
+	#pluck
+	for x in np.arange(0,2*np.pi, np.pi/8):
+		elbow.append(np.pi/8)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(np.pi/3)
+		gripper.append(0.5)
+		pan.append(0)
+		lift.append(-3*np.pi/5)
+	
+	#move to basket
+	for x in np.arange(0,np.pi, np.pi/8):
+		elbow.append(13*np.pi/48*math.cos(x-np.pi) + 19*np.pi/48)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(0)
+		gripper.append(0.5)
+		pan.append(0)
+		lift.append(2*np.pi/15*math.cos(x-np.pi) - 7*np.pi/15)
+	
+	#drop in basket
+	for x in np.arange(0,2*np.pi, np.pi/8):
+		elbow.append(2*np.pi/3)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(0)
+		gripper.append(0)
+		pan.append(0)
+		lift.append(-np.pi/3)
+	
+	#FRUIT 3
+	#go to fruit
+	for x in np.arange(0,2*np.pi, np.pi/8):
+		elbow.append(np.pi/4*math.cos(0.5*x) + 5*np.pi/12)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(0)
+		gripper.append(0)
+		pan.append(np.pi/4*math.cos(0.5*x))
+		lift.append(np.pi/24*math.cos(0.5*x-np.pi) - 7*np.pi/24)
+	#twist
+	for x in np.arange(0,np.pi, np.pi/8):
+		elbow.append(np.pi/6)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(np.pi/3*math.cos(2*x))
+		gripper.append(0.5)
+		pan.append(-np.pi/4)
+		lift.append(-np.pi/4)
+	#pluck
+	for x in np.arange(0,2*np.pi, np.pi/8):
+		elbow.append(np.pi/8)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(np.pi/3)
+		gripper.append(0.5)
+		pan.append(-np.pi/4)
+		lift.append(-np.pi/3)
+	
+	#move to basket
+	for x in np.arange(0,np.pi, np.pi/8):
+		elbow.append(13*np.pi/48*math.cos(x-np.pi) + 19*np.pi/48)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(0)
+		gripper.append(0.5)
+		pan.append(-np.pi/4)
+		lift.append(-np.pi/3)
+	
+	#drop in basket
+	for x in np.arange(0,2*np.pi, np.pi/8):
+		elbow.append(2*np.pi/3)
+		wrist1.append(np.pi)
+		wrist2.append(3*np.pi/2)
+		wrist3.append(0)
+		gripper.append(0)
+		pan.append(-np.pi/4)
+		lift.append(-np.pi/3)
+		
+	robot.animate(cfg_trajectory={
+		'shoulder_lift_joint' : lift,
+		'shoulder_pan_joint' : pan,
+		'elbow_joint' : elbow,
+		'wrist_2_joint' : wrist2,
+		'wrist_1_joint' : wrist1,
+		'wrist_3_joint' : wrist3,
+		'robotiq_85_left_knuckle_joint' : gripper}, loop_time=6)
+	
+	
 			
 def main():
     robot = URDF.load('/home/shreyaganti/DUET/ur5/ur_with_gripper.xacro')
@@ -662,17 +859,14 @@ def main():
     #brick_layer(robot)
     #bartender_shaking(robot)
     #bartender_pouring(robot)
-
-    bus_driver_steering(robot)
+    #bus_driver_steering(robot)
     #bus_driver_lever(robot)
-    
     #yoga_right_overhead(robot)
     #screw_lightbulb(robot)
     #hammer_wall(robot)
     #wrench(robot)
-    
-    #NEED TO DO:
-    #changing lengths and angles of primitives (raking at different lengths and at different places)
+    #dust_shelf(robot)
+    #pick_fruit(robot)
     
     #PRIMITIVE IDEAS
     #farmer: picking fruit (reach out, twist, put in basket)
