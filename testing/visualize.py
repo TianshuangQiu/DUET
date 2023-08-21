@@ -501,6 +501,69 @@ def bartender_pouring(robot):
 		'wrist_1_joint' : wrist1,
 		'wrist_2_joint' : wrist2}, loop_time=6)
 
+
+def bartender_shake_pour(robot):
+	pan = []
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	
+	for x in np.arange(0,8*np.pi, np.pi/8):
+		lift.append(np.pi/48*math.cos(x)+np.pi/4)
+		elbow.append(np.pi/24*math.cos(x) - 2*np.pi/3)
+		wrist1.append(np.pi/8*math.cos(x) + 7*np.pi/6)
+		wrist2.append(np.pi/8*math.cos(2*x) + 3*np.pi/2)
+		pan.append(0)
+	
+	y1 = np.pi/48*math.cos(8*np.pi)+np.pi/4
+	y2 = np.pi/48*math.cos(12*np.pi)-np.pi/3
+	lift_slope, lift_intercept = get_line(8*np.pi, y1, 12*np.pi, y2)
+	y1 = np.pi/24*math.cos(x) - 2*np.pi/3
+	y2 = np.pi/24*math.cos(12*np.pi) + np.pi/6
+	elbow_slope, elbow_intercept = get_line(8*np.pi, y1, 12*np.pi, y2)
+	
+	for x in np.arange(8*np.pi, 12*np.pi, np.pi/8):
+		lift.append(lift_slope*x + lift_intercept)
+		elbow.append(elbow_slope*x + elbow_intercept)
+		wrist1.append(31*np.pi/24)
+		wrist2.append(13*np.pi/8)
+		pan.append(np.pi/12*math.cos(x-np.pi))
+		
+	for x in np.arange(12*np.pi, 20*np.pi, np.pi/8):
+		lift.append(np.pi/48*math.cos(x)-np.pi/3)
+		elbow.append(np.pi/24*math.cos(x) + np.pi/6)
+		wrist1.append(np.pi/8*math.cos(x) + 7*np.pi/6)
+		wrist2.append(np.pi/8*math.cos(2*x) + 3*np.pi/2)
+		pan.append(0)
+	
+	#TRANSITION
+	y2 = np.pi/4 + np.pi/2.5
+	y1 = np.pi/24 + np.pi/6
+	slope, intercept = get_line(0, y1, 3*np.pi, y2)
+	for x in np.arange(0,3*np.pi, np.pi/8):
+		lift.append(np.pi/14*math.cos(0) - np.pi/2.5)
+		elbow.append(slope*x + intercept)
+		wrist1.append(7*np.pi/6)
+		wrist2.append(3*np.pi/2)
+		pan.append(0)
+	
+	#POUR	
+	for x in np.arange(0,8*np.pi, np.pi/8):
+		lift.append(np.pi/14*math.cos(x) - np.pi/2.5)
+		elbow.append(np.pi/4*math.e**(-0.2*x)*math.cos(x) + np.pi/2.5)
+		wrist1.append(7*np.pi/6)
+		wrist2.append(3*np.pi/2)
+		pan.append(0)
+		
+	robot.animate(cfg_trajectory={
+		'shoulder_pan_joint' : pan,
+		'shoulder_lift_joint' : lift,
+		'elbow_joint' : elbow,
+		'wrist_1_joint' : wrist1,
+		'wrist_2_joint' : wrist2}, loop_time=7)
+
+
 def bus_driver_steering(robot):
 	pan = []
 	lift = []
@@ -859,6 +922,7 @@ def main():
     #brick_layer(robot)
     #bartender_shaking(robot)
     #bartender_pouring(robot)
+    #bartender_shake_pour(robot)
     #bus_driver_steering(robot)
     #bus_driver_lever(robot)
     #yoga_right_overhead(robot)
@@ -867,10 +931,6 @@ def main():
     #wrench(robot)
     #dust_shelf(robot)
     #pick_fruit(robot)
-    
-    #PRIMITIVE IDEAS
-    #farmer: picking fruit (reach out, twist, put in basket)
-    #yoga: arm stretches
     
 
 if __name__ == "__main__":
