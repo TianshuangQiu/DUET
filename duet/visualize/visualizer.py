@@ -6,9 +6,9 @@ class Motifs:
     def __init__(self) -> None:
         pass
 
-    def filler(self, **kwargs):
-        param_0 = kwargs["param0"]
-        param_1 = kwargs["param1"]
+    def filler(self, config_dict):
+        param_0 = config_dict["param0"]
+        param_1 = config_dict["param1"]
 
         return np.ones((20, 6)) * param_0 + param_1
 
