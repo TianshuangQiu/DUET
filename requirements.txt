@@ -5,6 +5,7 @@ pandas
 matplotlib
 tqdm
 cowsay
-urdfpy
+# urdfpy
 streamlit
+streamlit-sortables
 plotly

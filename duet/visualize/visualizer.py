@@ -1,0 +1,371 @@
+import numpy as np
+import cowsay
+import math
+from random import uniform, choice
+
+
+class Motifs:
+    def __init__(self) -> None:
+        pass
+
+    def filler(self, config_dict):
+        param_0 = config_dict["param0"]
+        param_1 = config_dict["param1"]
+
+        return np.ones((20, 6)) * param_0 + param_1
+    
+    def circle_horizontal(self, config_dict):
+        test = config_dict["param0"]
+        temp = []
+        final_array = []
+        for x in np.arange(0, 12 * np.pi, np.pi / 40):
+            temp.append(np.pi / 6 * math.cos(x) + np.pi)
+            temp.append(np.pi / 10 * math.cos(x - np.pi / 2) - np.pi / 4)
+            temp.append(np.pi / 4 * math.cos(x + np.pi / 2) + 7 * np.pi / 12)
+            temp.append(np.pi / 12 * math.cos(x - np.pi / 2) + 1.15 * np.pi)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        return final_array
+    
+    def get_line(self, x1, y1, x2, y2):
+        slope = (y2-y1)/(x2-x1)
+        intercept = y2 - slope*x2
+        return slope, intercept
+
+    def painter_vertical(self, config_dict):
+        test = config_dict["param0"]
+        final_array = []
+        temp = []
+        vels = []
+        acc = []
+        blends = []
+        for x in np.arange(0, 12 * np.pi, np.pi / 40):
+            temp.append(np.pi)
+            temp.append(np.pi / 8 * math.cos(x - np.pi) - np.pi / 6)
+            temp.append(np.pi / 20 * math.cos(x))
+            temp.append(np.pi / 10 * math.cos(x) + 8*np.pi/7)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        return final_array
+
+
+    def cleaner_horizontal(self, config_dict):
+        test = config_dict["param0"]
+        temp = []
+        final_array = []
+        for x in np.arange(0, 20 * np.pi, np.pi / 8):
+            temp.append(np.pi / 8 * math.cos(x) + np.pi)
+            temp.append(np.pi / 14 * math.cos(2*x) -19 * np.pi / 60)
+            temp.append(np.pi / 12 * math.cos(2 * x-np.pi) + np.pi / 3.5)
+            temp.append(np.pi)
+            temp.append(np.pi / 12 * math.cos(x + np.pi) + 3*np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        return final_array
+
+
+    def circle_horizontal(self, config_dict):
+        temp = []
+        test = config_dict["param0"]
+        final_array = []
+        for x in np.arange(0, 12 * np.pi, np.pi / 40):
+            temp.append(np.pi / 6 * math.cos(x) + np.pi)
+            temp.append(np.pi / 10 * math.cos(x - np.pi / 2) - np.pi / 4)
+            temp.append(np.pi / 4 * math.cos(x + np.pi / 2) + 7 * np.pi / 12)
+            temp.append(np.pi / 12 * math.cos(x - np.pi / 2) + 1.15 * np.pi)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        return final_array
+
+
+    def hammer_wall(self, config_dict):
+        temp = []
+        test = config_dict["param0"]
+        final_array = []
+        for x in np.arange(0, 8 * np.pi, np.pi / 8):
+            temp.append(np.pi)
+            temp.append(np.pi / 8)
+            temp.append(np.pi / 6 * math.cos(x) - np.pi / 2)
+            temp.append(5 * np.pi / 4)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        return final_array
+
+
+    def screw_lightbulb(self, config_dict):
+        offset = 0
+        test = config_dict["param0"]
+        temp = []
+        final_array = []
+        for x in np.arange(0, 16 * np.pi, np.pi / 8):
+            temp.append(np.pi)
+            temp.append(-np.pi / 8)
+            temp.append(-np.pi / 2.7)
+            temp.append(np.pi)
+            temp.append(3 * np.pi / 2)
+            temp.append(np.pi / 6 * math.cos(x - offset))
+            # gripper.append(0.25*math.cos(x-offset))
+            if x % np.pi == 0:
+                offset += np.pi
+            final_array.append(temp)
+            temp = []
+        return final_array
+
+
+    def waving(self, config_dict):
+        temp = []
+        test = config_dict["param0"]
+        final_array = []
+        for x in np.arange(0, 8 * np.pi, np.pi / 40):
+            temp.append(np.pi / 2)
+            temp.append(np.pi / 8 * math.cos(x) - np.pi / 2)
+            temp.append(np.pi / 6 * math.cos(x - 0.5))
+            temp.append(np.pi / 4 * math.cos(x) - np.pi / 2 + 3 * np.pi / 2)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        return final_array
+
+    def metronome(self, config_dict):
+        test = config_dict["param0"]
+        temp = []
+        final_array = []
+        for x in np.arange(0,  300* np.pi, np.pi / 40):
+            temp.append(np.pi / 2)
+            temp.append(-np.pi/2)
+            temp.append(np.pi / 20 * math.cos(x) - np.pi / 3)
+            temp.append(np.pi)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        return final_array
+
+
+    def circle_vertical(self, config_dict):
+        test = config_dict["param0"]
+        final_array = []
+        temp = []
+        for x in np.arange(0, 8 * np.pi, np.pi / 40):
+            temp.append(np.pi / 6 * math.cos(x) + np.pi)
+            temp.append(np.pi / 6 * math.cos(x - np.pi / 2))
+            temp.append(np.pi / 6 * math.cos(x) - np.pi / 6)
+            temp.append(np.pi / 10 * math.cos(x + np.pi / 2) + 7 * np.pi / 6)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        return final_array
+
+
+    def sweep_floor(self, config_dict):
+        test = config_dict["param0"]
+        final_array = []
+        temp = []
+        for x in np.arange(0, 16 * np.pi, np.pi / 40):
+            temp.append(np.pi / 6 * math.cos(x) + np.pi)
+            temp.append(np.pi / 14 * math.cos(x - np.pi / 2) - np.pi / 3)
+            temp.append(np.pi / 14 * math.cos(x + np.pi / 2) + 7 * np.pi / 12)
+            temp.append(7 * np.pi / 6)
+            temp.append(np.pi / 7 * math.cos(x) + 4 * np.pi / 3)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        return final_array
+
+    def yes(self, config_dict):
+        amp = config_dict["amp"]
+        final_array = []
+        temp = []
+        for x in np.arange(0, 9 * np.pi/2, np.pi / 40):
+                temp.append(np.pi)
+                temp.append(-np.pi/3)
+                temp.append(np.pi/4)
+                temp.append(amp*math.cos(x)+7*np.pi/6)
+                temp.append(3*np.pi/2)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+        return final_array
+
+    def pointing(self, config_dict): #0.01
+        test = config_dict["param0"]
+        final_array = []
+        temp = []
+        for x in np.arange(0, 4 * np.pi, np.pi / 40):
+                temp.append(np.pi)
+                temp.append(np.pi/48*math.cos(x-np.pi) - np.pi/3)
+                temp.append(np.pi/48*math.cos(x) + np.pi/4)
+                temp.append(7*np.pi/6)
+                temp.append(3*np.pi/2)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+        return final_array
+
+    def no(self, config_dict):
+        amp = config_dict["amp"]
+        final_array = []
+        temp = []
+        for x in np.arange(0, 9 * np.pi/2, np.pi / 40):
+                temp.append(np.pi)
+                temp.append(-np.pi/3)
+                temp.append(np.pi/4)
+                temp.append(8*np.pi/7)
+                temp.append(amp*math.cos(x) + 3*np.pi/2)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+        return final_array
+
+    # def random_yes_no(ur):
+    #     funcs = [yes, no]
+    #     amp = uniform(np.pi/12, np.pi/3)
+    #     final_array = choice(funcs)(amp)
+    #     final_array = np.array(final_array)
+    #     #ur = UR5Robot(gripper=True)
+    #     ur.move_joint(final_array[0], vel=0.5)
+    #     # for i, arr in enumerate(final_array):
+    #     #     ur.servo_joint(arr.tolist(), acc=0.2, vel=0, time=0.05, lookahead_time=0.2)
+    #     #     time.sleep(0.05)
+    #     ur.move_joint_path(
+    #         final_array,
+    #         vels=[0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+    #         accs=[0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+    #         blends=[0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
+    #     )
+
+    #     time.sleep(5)
+
+    #     for i in range(50):
+    #         amp = uniform(np.pi/12, np.pi/3.5)
+    #         final_array = choice(funcs)(amp)
+    #         final_array = np.array(final_array)  
+    #         for i, arr in enumerate(final_array):
+    #             # t = 0.05
+    #             # if i ==0:
+    #             #     t = 0.5
+    #             # ur.servo_joint(arr.tolist(), acc=0.2, vel=0, time=t, lookahead_time=0.2)
+    #             ur.move_joint_path(
+    #                 final_array,
+    #                 vels=[0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+    #                 accs=[0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+    #                 blends=[0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
+    #             )
+    #             time.sleep(0.05)
+    #         time.sleep(5)
+
+    def horizontal_tag(self, config_dict):
+        test = config_dict["param0"]
+        final_array = []
+        temp = []
+        for x in np.arange(0, 9 * np.pi/2, np.pi / 40):
+                temp.append(np.pi/4*math.cos(x) + np.pi)
+                temp.append(0)
+                temp.append(0)
+                temp.append(np.pi)
+                temp.append(3*np.pi/2)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+        return final_array
+
+    # def random_pointing(self, config_dict): #gripper CLOSED
+    #     final_array = []
+    #     temp = []
+
+    #     #first pose
+    #     prev_pan = pan_angle = uniform(3*np.pi/4, 5*np.pi/4)
+    #     prev_lift = lift_angle = uniform(-np.pi/3,-np.pi/7)
+    #     if lift_angle < -np.pi/4:
+    #         prev_elbow = elbow_angle = uniform(np.pi/10, np.pi/3)
+    #     else:
+    #         prev_elbow = elbow_angle = uniform(-np.pi/4,np.pi/10)
+    #     prev_w1 = wrist1_angle = uniform(-np.pi/4, np.pi/4)
+    #     #go to first pose
+    #     temp.append(pan_angle)
+    #     temp.append(lift_angle)
+    #     temp.append(elbow_angle)
+    #     temp.append(wrist1_angle)
+    #     temp.append(3*np.pi/2)
+    #     temp.append(0)
+    #     final_array.append(temp)
+    #     temp = []
+    #     #point
+    #     if wrist1_angle > np.pi:
+    #         lift_delta = 0.2
+    #     else:
+    #         lift_delta = -0.2
+    #     for x in np.arange(0, 9 * np.pi/2, np.pi / 40):
+    #         temp.append(pan_angle)
+    #         if x > 2*np.pi:
+    #             temp.append(lift_angle + lift_delta)
+    #         else:
+    #             temp.append(lift_angle)
+    #         temp.append(elbow_angle)
+    #         temp.append(wrist1_angle)
+    #         temp.append(3*np.pi/2)
+    #         temp.append(0)
+    #         final_array.append(temp)
+    #         temp = []
+
+    #     for x in range(5):
+    #         #new pos
+    #         pan_angle = uniform(3*np.pi/4, 5*np.pi/4)
+    #         lift_angle = uniform(-np.pi/3,-np.pi/4)
+    #         if lift_angle < -np.pi/4:
+    #             elbow_angle = uniform(np.pi/10, np.pi/3)
+    #         else:
+    #             elbow_angle = uniform(-np.pi/4,np.pi/10)
+    #         wrist1_angle = uniform(-np.pi/4, np.pi/4)
+    #         if wrist1_angle > np.pi:
+    #             lift_delta = 0.2
+    #         else:
+    #             lift_delta = -0.2
+
+    #         #transition
+    #         pan_slope, pan_intercept = get_line(0,prev_pan, 2*np.pi, pan_angle)
+    #         lift_slope, lift_intercept = get_line(0,prev_lift, 2*np.pi, lift_angle)
+    #         elbow_slope, elbow_intercept = get_line(0,prev_elbow, 2*np.pi, elbow_angle)
+    #         w1_slope, w1_intercept = get_line(0,prev_w1, 2*np.pi, wrist1_angle)
+    #         for x in np.arange(0, 2*np.pi, np.pi/40):
+    #             temp.append(pan_slope*x + pan_intercept)
+    #             temp.append(lift_slope*x + lift_intercept)
+    #             temp.append(elbow_slope*x + elbow_intercept)
+    #             temp.append(w1_slope*x + w1_intercept)
+
+    #         #point
+    #         for x in np.arange(0, 9 * np.pi/2, np.pi / 40):
+    #             temp.append(pan_angle)
+    #             if x > 2*np.pi:
+    #                 temp.append(lift_angle + lift_delta)
+    #             else:
+    #                 temp.append(lift_angle)
+    #             temp.append(elbow_angle)
+    #             temp.append(wrist1_angle)
+    #             temp.append(3*np.pi/2)
+    #             temp.append(0)
+    #             final_array.append(temp)
+    #             temp = []
+    #     return final_array
+
+
+class Visualizer:
+    def __init__(self, waypoints, robot_file="ur5/ur_with_gripper.xacro") -> None:
+        from urdfpy import URDF
+
+        self.waypoints = waypoints
+        self.robot = URDF.load(robot_file)
+
+    def visualize(self, time=30):
+        self.robot.animate(self.waypoints, loop_time=time)

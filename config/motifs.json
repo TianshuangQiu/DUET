@@ -1,0 +1,122 @@
+{
+  "filler": {
+    "params": {
+      "param0": [
+        0.0,
+        10.0
+      ],
+      "param1": [
+        0.0,
+        10.0
+      ]
+    }
+  },
+
+  "circle_horizontal": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "painter_vertical": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "cleaner_horizontal": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "hammer_wall": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+  
+  "screw_lightbulb": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "waving": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "metronome": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "sweep_floor": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "yes": {
+    "params": {
+      "amp": [
+        0.2617,
+        1.047
+      ]
+    }
+  },
+
+  "no": {
+    "params": {
+      "amp": [
+        0.2617,
+        1.047
+      ]
+    }
+  },
+
+  "pointing": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "horizontal_tag": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  }
+}
