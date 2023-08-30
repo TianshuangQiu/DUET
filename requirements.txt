@@ -1,3 +1,4 @@
+urx
 numpy==1.20
 pandas
 # torch

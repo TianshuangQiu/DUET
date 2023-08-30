@@ -930,7 +930,7 @@ def main():
     #hammer_wall(robot)
     #wrench(robot)
     #dust_shelf(robot)
-    #pick_fruit(robot)
+    pick_fruit(robot)
     
 
 if __name__ == "__main__":
