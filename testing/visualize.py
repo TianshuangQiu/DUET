@@ -896,7 +896,91 @@ def pick_fruit(robot):
 		'wrist_1_joint' : wrist1,
 		'wrist_3_joint' : wrist3,
 		'robotiq_85_left_knuckle_joint' : gripper}, loop_time=6)
-	
+
+def handing_object(robot):
+	gripper = []
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	wrist3 = []
+	release = False
+	for i in range(5):
+		for x in np.arange(0, np.pi, np.pi/8):
+			lift.append(np.pi/8*math.cos(x-np.pi) - np.pi/4)
+			elbow.append(np.pi/8*math.cos(x) +np.pi/4)
+			wrist1.append(5*np.pi/4)
+			wrist2.append(3*np.pi/2)
+			if release:
+				gripper.append(0.5)
+			else:
+				gripper.append(0)
+		for x in np.arange(0, np.pi, np.pi/8):
+			lift.append(np.pi/8-np.pi/4)
+			elbow.append(-np.pi/8+np.pi/4)
+			wrist1.append(5*np.pi/4)
+			wrist2.append(3*np.pi/2)
+			if release:
+				gripper.append(0.25*math.cos(x) +0.25)
+			else:
+				gripper.append(0.25*math.cos(x-np.pi) +0.25)
+		for x in np.arange(np.pi, 2*np.pi, np.pi/8):
+			lift.append(np.pi/8*math.cos(x-np.pi) - np.pi/4)
+			elbow.append(np.pi/8*math.cos(x) +np.pi/4)
+			wrist1.append(5*np.pi/4)
+			wrist2.append(3*np.pi/2)
+			if release:
+				gripper.append(0)
+			else:
+				gripper.append(0.5)
+		release = not release
+	robot.animate(cfg_trajectory={
+		'shoulder_lift_joint' : lift,
+		'elbow_joint' : elbow,
+		'wrist_2_joint' : wrist2,
+		'wrist_1_joint' : wrist1,
+		'robotiq_85_left_knuckle_joint' : gripper}, loop_time=8)
+
+def stop_each_joint(robot):
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	for x in np.arange(0,10*np.pi, np.pi/8):
+		if x >=15*np.pi/2:
+			lift.append(-np.pi/2)
+			elbow.append(0)
+			wrist1.append(-np.pi/2)
+		elif x >=9*np.pi/2:
+			lift.append(-np.pi/2)
+			elbow.append(0)
+			wrist1.append(np.pi/4*math.cos(x) - np.pi/2)
+		elif x >= 5*np.pi/2:
+			lift.append(-np.pi/2)
+			elbow.append(np.pi/4*math.cos(x - 0.5))
+			wrist1.append(np.pi/4*math.cos(x) - np.pi/2)
+		else:
+			lift.append(np.pi/6*math.cos(x) - np.pi/2)
+			elbow.append(np.pi/4*math.cos(x- 0.5))
+			wrist1.append(np.pi/4*math.cos(x) - np.pi/2)
+		
+	robot.animate(cfg_trajectory={
+		'shoulder_lift_joint' : lift,
+		'elbow_joint' : elbow,
+		'wrist_1_joint' : wrist1}, loop_time=6)
+
+def waltz(robot):
+	lift = []
+	elbow = []
+	wrist1 = []
+	for x in np.arange(0,8*np.pi, np.pi/8):
+		lift.append(np.pi/6*math.cos(x) - np.pi/2)
+		elbow.append(np.pi/4*math.cos(x))
+		wrist1.append(np.pi/4*math.cos(x) - np.pi/2)
+	robot.animate(cfg_trajectory={
+		'shoulder_lift_joint' : lift,
+		'elbow_joint' : elbow,
+		'wrist_1_joint' : wrist1}, loop_time=10)
 	
 			
 def main():
@@ -930,7 +1014,10 @@ def main():
     #hammer_wall(robot)
     #wrench(robot)
     #dust_shelf(robot)
-    pick_fruit(robot)
+    #pick_fruit(robot)
+    #handing_object(robot)
+    #stop_each_joint(robot)
+    waltz(robot)
     
 
 if __name__ == "__main__":
