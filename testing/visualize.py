@@ -970,17 +970,71 @@ def stop_each_joint(robot):
 		'wrist_1_joint' : wrist1}, loop_time=6)
 
 def waltz(robot):
+	pan = []
 	lift = []
 	elbow = []
 	wrist1 = []
-	for x in np.arange(0,8*np.pi, np.pi/8):
-		lift.append(np.pi/6*math.cos(x) - np.pi/2)
-		elbow.append(np.pi/4*math.cos(x))
-		wrist1.append(np.pi/4*math.cos(x) - np.pi/2)
+	wrist2 = []
+	wrist3 = []
+	for i in range(10):
+		for x in np.arange(0,np.pi, np.pi/8):
+			pan.append(np.pi/2)
+			lift.append(np.pi/6*math.cos(x) - np.pi/2)
+			elbow.append(0)
+			wrist1.append(3*np.pi/2)
+			wrist2.append(0)
+			wrist3.append(0)
+		for x in np.arange(0,np.pi, np.pi/8):
+			pan.append(np.pi/2)
+			lift.append(np.pi/12*math.cos(2*x-np.pi) - 7*np.pi/12)
+			elbow.append(0)
+			wrist1.append(3*np.pi/2)
+			wrist2.append(0)
+			wrist3.append(0)
+		for x in np.arange(0,np.pi, np.pi/8):
+			pan.append(np.pi/2)
+			lift.append(np.pi/6*math.cos(x-np.pi) - np.pi/2)
+			elbow.append(0)
+			wrist1.append(3*np.pi/2)
+			wrist2.append(0)
+			wrist3.append(0)
+		for x in np.arange(0,np.pi, np.pi/8):
+			pan.append(np.pi/2)
+			lift.append(np.pi/12*math.cos(2*x) - 5*np.pi/12)
+			elbow.append(0)
+			wrist1.append(3*np.pi/2)
+			wrist2.append(0)
+			wrist3.append(0)	
 	robot.animate(cfg_trajectory={
+		'shoulder_pan_joint' : pan,
 		'shoulder_lift_joint' : lift,
 		'elbow_joint' : elbow,
-		'wrist_1_joint' : wrist1}, loop_time=10)
+		'wrist_1_joint' : wrist1,
+		'wrist_2_joint' : wrist2,
+		'wrist_3_joint' : wrist3}, loop_time=18)
+
+def one_joint_at_a_time(robot):
+	pan = []
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	wrist3 = []
+	limbs = [pan, lift, elbow, wrist1, wrist2, wrist3]
+	for x in np.arange(0,8*np.pi, np.pi/8):
+		pan.append(np.pi/2)
+		lift.append(np.pi/6*math.cos(x) - np.pi/2)
+		elbow.append(0)
+		wrist1.append(3*np.pi/2)
+		wrist2.append(0)
+		wrist3.append(0)
+	robot.animate(cfg_trajectory={
+		'shoulder_pan_joint' : pan,
+		'shoulder_lift_joint' : lift,
+		'elbow_joint' : elbow,
+		'wrist_1_joint' : wrist1,
+		'wrist_2_joint' : wrist2,
+		'wrist_3_joint' : wrist3}, loop_time=18)
 	
 			
 def main():
@@ -1017,7 +1071,8 @@ def main():
     #pick_fruit(robot)
     #handing_object(robot)
     #stop_each_joint(robot)
-    waltz(robot)
+    #waltz(robot)
+    one_joint_at_a_time(robot)
     
 
 if __name__ == "__main__":
