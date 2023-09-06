@@ -6,6 +6,7 @@ from random import uniform, choice
 import kinpy as kp
 import plotly.graph_objects as go
 import plotly.express as px
+from matplotlib import pyplot as plt
 
 
 class Motifs:
@@ -369,14 +370,47 @@ class Visualizer:
                 if j == len(transform_dict) - 1:
                     continue
                 df.loc[len(df)] = [i, *transform_dict[k].pos]
-        fig = px.line_3d(
-            df,
-            x="x",
-            y="y",
-            z="z",
-            animation_frame="frame",
-            range_x=[-1, 1],
-            range_y=[-1, 1],
-            range_z=[-0.5, 1],
+        # fig = px.line_3d(
+        #     df,
+        #     x="x",
+        #     y="y",
+        #     z="z",
+        #     animation_frame="frame",
+        #     range_x=[-1, 1],
+        #     range_y=[-1, 1],
+        #     range_z=[-0.5, 1],
+        # )
+        frames = [
+            go.Frame(
+                data=go.Scatter3d(
+                    x=df[df["frame"] == k]["x"],
+                    y=df[df["frame"] == k]["y"],
+                    z=df[df["frame"] == k]["z"],
+                    marker=dict(
+                        size=4,
+                    ),
+                    line=dict(color="darkblue", width=5),
+                ),
+                layout=go.Layout(
+                    yaxis=dict(range=[-1, 1]),
+                ),
+            )
+            for k in df["frame"].unique()
+        ]
+        fig = go.Figure(
+            data=[go.Scatter3d()],
+            layout=go.Layout(  # Styling
+                scene=dict(),
+                updatemenus=[
+                    dict(
+                        type="buttons",
+                        buttons=[dict(label="Play", method="animate", args=[None])],
+                    )
+                ],
+                yaxis=dict(range=[-1, 1]),
+            ),
+            frames=frames,
         )
+        # fig.layout.updatemenus[0].buttons[0].args[0]["frame"]["duration"] = 30
+        # fig.layout.updatemenus[0].buttons[0].args[0]["transition"]["duration"] = 5
         return fig
