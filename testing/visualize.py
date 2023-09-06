@@ -1,6 +1,7 @@
 from urdfpy import URDF
 import numpy as np
 import math
+import time
 
 #robot = URDF.load('/home/shreyaganti/urdfpy/tests/data/ur5/ur5.urdf')
 # for link in robot.links:
@@ -1020,14 +1021,25 @@ def one_joint_at_a_time(robot):
 	wrist1 = []
 	wrist2 = []
 	wrist3 = []
+	prev_pan = np.pi
+	prev_lift = -np.pi/3
+	prev_elbow = np.pi/6
+	prev_w1 = np.pi
+	prev_w2 = 3*np.pi/2
+	prev_w3 = 0
+	prev = [prev_pan, prev_lift, prev_elbow, prev_w1, prev_w2, prev_w3]
 	limbs = [pan, lift, elbow, wrist1, wrist2, wrist3]
-	for x in np.arange(0,8*np.pi, np.pi/8):
-		pan.append(np.pi/2)
-		lift.append(np.pi/6*math.cos(x) - np.pi/2)
-		elbow.append(0)
-		wrist1.append(3*np.pi/2)
-		wrist2.append(0)
-		wrist3.append(0)
+	for j in range(20):
+		index = np.random.randint(0,6)
+		value = np.random.uniform(-np.pi/8,np.pi/8)
+		i = 0
+		while i < 6:
+			if i == index:
+				limbs[index].append(prev[index] + value)
+			else:			
+				limbs[i].append(prev[i])
+			i+=1
+		#time.sleep(2)
 	robot.animate(cfg_trajectory={
 		'shoulder_pan_joint' : pan,
 		'shoulder_lift_joint' : lift,
