@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit_sortables import sort_items
 import json
 from copy import deepcopy
-from duet.visualize.visualizer import Motifs
+from duet.visualize.visualizer import Motifs, Visualizer
 import pdb
 
 with open("config/motifs.json", "r") as r:
@@ -16,6 +16,9 @@ if "modifying" not in st.session_state:
 
 if "motif_func" not in st.session_state:
     st.session_state["motif_func"] = Motifs()
+
+if "visualizer" not in st.session_state:
+    st.session_state["visualizer"] = Visualizer()
 
 
 def motif_variation(container: st.container, config: dict, name, key):
@@ -45,6 +48,7 @@ def motif_variation(container: st.container, config: dict, name, key):
 
 if not st.session_state["modifying"]:
     with st.sidebar:
+        st.markdown("# DUET")
         st.markdown("### 0. Select configuration")
         zero = st.button("Select", key=0)
         st.markdown("### 1. View and modify Current configuration")
@@ -76,19 +80,26 @@ if not st.session_state["modifying"]:
 
     elif st.session_state["phase"] == 1:
         all_sections = list(st.session_state["config"].keys())
-        st.session_state["ordering"] = sort_items(all_sections)
-        new_motif_name = st.text_input("Name for new section")
+        if "ordering" not in st.session_state:
+            st.session_state["ordering"] = sort_items(all_sections)
+        else:
+            st.session_state["ordering"] = sort_items(st.session_state["ordering"])
+        new_motif_name = st.text_input("Name for new section", value="filler_name")
         add = st.button("add motif")
         if add:
             if new_motif_name in st.session_state["config"]:
                 st.warning("Name already exists in sequence!")
             else:
                 st.session_state["config"][new_motif_name] = {}
+                st.session_state["ordering"].append(new_motif_name)
                 st.experimental_rerun()
         edit = st.button("edit motif")
         if edit:
-            st.session_state["modifying"] = True
-            st.experimental_rerun()
+            if len(st.session_state["ordering"]) <= 1:
+                st.warning("Please insert more items first")
+            else:
+                st.session_state["modifying"] = True
+                st.experimental_rerun()
 
     elif st.session_state["phase"] == 2:
         st.markdown("### Select range for visualization")
@@ -113,9 +124,10 @@ if not st.session_state["modifying"]:
             for m in motif_names:
                 param_dict = st.session_state["config"][m]
                 func = getattr(traj_creator, param_dict["type"])
-                trajectory.append(func(param_dict["params"]))
+                trajectory.extend(func(param_dict["params"]))
             st.markdown("### Generated trajectory:")
             st.write(trajectory)
+            st.plotly_chart(st.session_state["visualizer"].visualize(trajectory))
 
         save_file_name = st.text_input("Save Name", "tmp_save.json")
         save = st.button("Save Configuration")
@@ -131,6 +143,7 @@ else:
             deepcopy(st.session_state["ordering"]),
         )
     with st.sidebar:
+        st.markdown("# DUET")
         idx = st.slider(
             "Index of motif to change", 0, len(st.session_state["config"]) - 1, 0
         )
