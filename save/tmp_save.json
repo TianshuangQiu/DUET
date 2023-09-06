@@ -1,1 +1,1 @@
-[{"s": {}, "sf": {}, "a": {}, "asd": {"type": "filler", "params": {"param0": 5, "param1": 1}}}, ["s", "sf", "a", "asd"]]
+[{"yes": {"type": "yes", "params": {"param0": 0.0, "param1": 0.0, "amp": 0.74}}, "no2": {"type": "no", "params": {"param0": 0.0, "param1": 0.0, "amp": 0.84}}, "no": {"type": "no", "params": {"param0": 0.0, "param1": 0.0, "amp": 0.97}}}, ["yes", "no2", "no"]]
