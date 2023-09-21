@@ -1,6 +1,7 @@
 from urdfpy import URDF
 import numpy as np
 import math
+import time
 
 #robot = URDF.load('/home/shreyaganti/urdfpy/tests/data/ur5/ur5.urdf')
 # for link in robot.links:
@@ -291,7 +292,7 @@ def circle_vertical(robot):
 		pan.append(np.pi/6*math.cos(x))
 		lift.append(np.pi/6*math.cos(x-np.pi/2))
 		elbow.append(np.pi/6*math.cos(x) - np.pi/6)
-		wrist1.append(np.pi/10*math.cos(x + np.pi/2) + 7*np.pi/6)
+		wrist1.append(np.pi/10*math.cos(x-3*np.pi/2) + 7*np.pi/6)
 		wrist2.append(3*np.pi/2)
 	robot.animate(cfg_trajectory={
 		'shoulder_pan_joint': pan,
@@ -946,41 +947,158 @@ def stop_each_joint(robot):
 	elbow = []
 	wrist1 = []
 	wrist2 = []
-	for x in np.arange(0,10*np.pi, np.pi/8):
-		if x >=15*np.pi/2:
+	for x in np.arange(0,14*np.pi, np.pi/8):
+		if x >=39.87:
 			lift.append(-np.pi/2)
 			elbow.append(0)
 			wrist1.append(-np.pi/2)
-		elif x >=9*np.pi/2:
+		elif x >=27.304:
 			lift.append(-np.pi/2)
 			elbow.append(0)
-			wrist1.append(np.pi/4*math.cos(x) - np.pi/2)
-		elif x >= 5*np.pi/2:
+			wrist1.append(np.pi/4*math.cos(x-0.5) - np.pi/2)
+		elif x >= 11*np.pi/2:
 			lift.append(-np.pi/2)
-			elbow.append(np.pi/4*math.cos(x - 0.5))
-			wrist1.append(np.pi/4*math.cos(x) - np.pi/2)
+			elbow.append(np.pi/4*math.cos(x - 0.6))
+			wrist1.append(np.pi/4*math.cos(x-0.6) - np.pi/2)
 		else:
-			lift.append(np.pi/6*math.cos(x) - np.pi/2)
-			elbow.append(np.pi/4*math.cos(x- 0.5))
-			wrist1.append(np.pi/4*math.cos(x) - np.pi/2)
+			lift.append(np.pi/3*math.cos(x) - np.pi/2)
+			elbow.append(np.pi/4*math.cos(x- 0.6))
+			wrist1.append(np.pi/4*math.cos(x-0.6) - np.pi/2)
 		
 	robot.animate(cfg_trajectory={
 		'shoulder_lift_joint' : lift,
 		'elbow_joint' : elbow,
-		'wrist_1_joint' : wrist1}, loop_time=6)
+		'wrist_1_joint' : wrist1}, loop_time=8)
 
 def waltz(robot):
+	pan = []
 	lift = []
 	elbow = []
 	wrist1 = []
-	for x in np.arange(0,8*np.pi, np.pi/8):
-		lift.append(np.pi/6*math.cos(x) - np.pi/2)
-		elbow.append(np.pi/4*math.cos(x))
-		wrist1.append(np.pi/4*math.cos(x) - np.pi/2)
+	wrist2 = []
+	wrist3 = []
+	for i in range(10):
+		for x in np.arange(0,np.pi, np.pi/8):
+			pan.append(np.pi/2)
+			lift.append(np.pi/6*math.cos(x) - np.pi/2)
+			elbow.append(0)
+			wrist1.append(3*np.pi/2)
+			wrist2.append(0)
+			wrist3.append(0)
+		for x in np.arange(0,np.pi, np.pi/8):
+			pan.append(np.pi/2)
+			lift.append(np.pi/12*math.cos(2*x-np.pi) - 7*np.pi/12)
+			elbow.append(0)
+			wrist1.append(3*np.pi/2)
+			wrist2.append(0)
+			wrist3.append(0)
+		for x in np.arange(0,np.pi, np.pi/8):
+			pan.append(np.pi/2)
+			lift.append(np.pi/6*math.cos(x-np.pi) - np.pi/2)
+			elbow.append(0)
+			wrist1.append(3*np.pi/2)
+			wrist2.append(0)
+			wrist3.append(0)
+		for x in np.arange(0,np.pi, np.pi/8):
+			pan.append(np.pi/2)
+			lift.append(np.pi/12*math.cos(2*x) - 5*np.pi/12)
+			elbow.append(0)
+			wrist1.append(3*np.pi/2)
+			wrist2.append(0)
+			wrist3.append(0)	
 	robot.animate(cfg_trajectory={
+		'shoulder_pan_joint' : pan,
 		'shoulder_lift_joint' : lift,
 		'elbow_joint' : elbow,
-		'wrist_1_joint' : wrist1}, loop_time=10)
+		'wrist_1_joint' : wrist1,
+		'wrist_2_joint' : wrist2,
+		'wrist_3_joint' : wrist3}, loop_time=18)
+
+def one_joint_at_a_time(robot):
+	pan = []
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	wrist3 = []
+	prev_pan = np.pi
+	prev_lift = -np.pi/3
+	prev_elbow = np.pi/6
+	prev_w1 = np.pi
+	prev_w2 = 3*np.pi/2
+	prev_w3 = 0
+	prev = [prev_pan, prev_lift, prev_elbow, prev_w1, prev_w2, prev_w3]
+	limbs = [pan, lift, elbow, wrist1, wrist2, wrist3]
+	for j in range(20):
+		index = np.random.randint(0,6)
+		value = np.random.uniform(-np.pi/8,np.pi/8)
+		i = 0
+		while i < 6:
+			if i == index:
+				limbs[index].append(prev[index] + value)
+			else:			
+				limbs[i].append(prev[i])
+			i+=1
+		#time.sleep(2)
+	robot.animate(cfg_trajectory={
+		'shoulder_pan_joint' : pan,
+		'shoulder_lift_joint' : lift,
+		'elbow_joint' : elbow,
+		'wrist_1_joint' : wrist1,
+		'wrist_2_joint' : wrist2,
+		'wrist_3_joint' : wrist3}, loop_time=18)
+
+def body_roll_up(robot):
+	pan = []
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	for x in np.arange(0,20*np.pi/3, np.pi/8):
+		if x >=5*np.pi:
+			pan.append(np.pi)
+			lift.append(-2*np.pi/3)
+			elbow.append(0)
+			wrist1.append(np.pi/4*math.cos(0.3*x-np.pi)-np.pi/4)
+			wrist2.append(3*np.pi/2)
+		else:
+			pan.append(np.pi)
+			lift.append(np.pi/3*math.cos(0.2*x)-np.pi/3)
+			elbow.append(np.pi/3*math.cos(0.4*x-np.pi)+np.pi/3)
+			wrist1.append(np.pi/4*math.cos(0.3*x-np.pi)-np.pi/4)
+			wrist2.append(3*np.pi/2)
+		
+	robot.animate(cfg_trajectory={
+		'shoulder_pan_joint' : pan,
+		'shoulder_lift_joint' : lift,
+		'elbow_joint' : elbow,
+		'wrist_1_joint' : wrist1,
+		'wrist_2_joint' : wrist2}, loop_time=8)
+
+def box(robot):
+	pan = []
+	lift = []
+	elbow = []
+	wrist1 = []
+	wrist2 = []
+	for x in np.arange(0,np.pi, np.pi/8):
+		pan.append(np.pi/4*math.cos(x))
+		lift.append(np.pi/60*math.cos(x-np.pi) + 11*np.pi/60)
+		elbow.append(np.pi/12*math.cos(2*x) - 11*np.pi/30)
+		wrist1.append(-5*np.pi/6)
+		wrist2.append(np.pi/6*math.cos(x + np.pi) - np.pi/2)
+	for x in np.arange(np.pi,2*np.pi, np.pi/8):
+		pan.append(-np.pi/4)
+		lift.append(np.pi/8*math.cos(x-np.pi) + 13*np.pi/40)
+		elbow.append(np.pi/12*math.cos(x-np.pi) - 11*np.pi/30)
+		wrist1.append(-5*np.pi/6)
+		wrist2.append(np.pi/6- np.pi/2)
+	robot.animate(cfg_trajectory={
+		'shoulder_pan_joint' : pan,
+		'shoulder_lift_joint' : lift,
+		'elbow_joint' : elbow,
+		'wrist_2_joint' : wrist2,
+		'wrist_1_joint' : wrist1}, loop_time=7)
 	
 			
 def main():
@@ -1017,7 +1135,10 @@ def main():
     #pick_fruit(robot)
     #handing_object(robot)
     #stop_each_joint(robot)
-    waltz(robot)
+    #waltz(robot)
+    #one_joint_at_a_time(robot)
+    #body_roll_up(robot)
+    box(robot)
     
 
 if __name__ == "__main__":
