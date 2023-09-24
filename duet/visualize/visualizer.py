@@ -3,7 +3,6 @@ import pandas as pd
 import cowsay
 import math
 from random import uniform, choice
-import kinpy as kp
 import plotly.graph_objects as go
 import plotly.express as px
 import pdb
@@ -374,12 +373,12 @@ class Motifs:
         # wrist3 = []
         release = False
         for i in range(5):
-            for x in np.arange(0, np.pi, np.pi/40):
+            for x in np.arange(0, np.pi, np.pi / 40):
                 temp.append(np.pi)
-                temp.append(np.pi/8*math.cos(x-np.pi) - np.pi/4)
-                temp.append(np.pi/8*math.cos(x) +np.pi/4)
-                temp.append(5*np.pi/4)
-                temp.append(3*np.pi/2)
+                temp.append(np.pi / 8 * math.cos(x - np.pi) - np.pi / 4)
+                temp.append(np.pi / 8 * math.cos(x) + np.pi / 4)
+                temp.append(5 * np.pi / 4)
+                temp.append(3 * np.pi / 2)
                 temp.append(0)
                 final_array.append(temp)
                 temp = []
@@ -387,12 +386,12 @@ class Motifs:
                 #     gripper.append(0.5)
                 # else:
                 #     gripper.append(0)
-            for x in np.arange(0, np.pi, np.pi/40):
+            for x in np.arange(0, np.pi, np.pi / 40):
                 temp.append(np.pi)
-                temp.append(np.pi/8-np.pi/4)
-                temp.append(-np.pi/8+np.pi/4)
-                temp.append(5*np.pi/4)
-                temp.append(3*np.pi/2)
+                temp.append(np.pi / 8 - np.pi / 4)
+                temp.append(-np.pi / 8 + np.pi / 4)
+                temp.append(5 * np.pi / 4)
+                temp.append(3 * np.pi / 2)
                 temp.append(0)
                 final_array.append(temp)
                 temp = []
@@ -400,12 +399,12 @@ class Motifs:
                 #     gripper.append(0.25*math.cos(x) +0.25)
                 # else:
                 #     gripper.append(0.25*math.cos(x-np.pi) +0.25)
-            for x in np.arange(np.pi, 2*np.pi, np.pi/40):
+            for x in np.arange(np.pi, 2 * np.pi, np.pi / 40):
                 temp.append(np.pi)
-                temp.append(np.pi/8*math.cos(x-np.pi) - np.pi/4)
-                temp.append(np.pi/8*math.cos(x) +np.pi/4)
-                temp.append(5*np.pi/4)
-                temp.append(3*np.pi/2)
+                temp.append(np.pi / 8 * math.cos(x - np.pi) - np.pi / 4)
+                temp.append(np.pi / 8 * math.cos(x) + np.pi / 4)
+                temp.append(5 * np.pi / 4)
+                temp.append(3 * np.pi / 2)
                 temp.append(0)
                 final_array.append(temp)
                 temp = []
@@ -415,123 +414,127 @@ class Motifs:
                 #     gripper.append(0.5)
             # release = not release
         return final_array
-    
+
+
 def stop_each_joint(self, config_dict):
-	# lift = []
-	# elbow = []
-	# wrist1 = []
-	# wrist2 = []
+    # lift = []
+    # elbow = []
+    # wrist1 = []
+    # wrist2 = []
     test = config_dict["param0"]
     temp = []
     final_array = []
-    for x in np.arange(0,10*np.pi, np.pi/8):
-        if x >=15*np.pi/2:
-            temp.append(np.pi/2)
-            temp.append(-np.pi/2)
+    for x in np.arange(0, 10 * np.pi, np.pi / 8):
+        if x >= 15 * np.pi / 2:
+            temp.append(np.pi / 2)
+            temp.append(-np.pi / 2)
             temp.append(0)
-            temp.append(-np.pi/2)
-            temp.append(3*np.pi/2)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-        elif x >=9*np.pi/2:
-            temp.append(np.pi/2)
-            temp.append(-np.pi/2)
-            temp.append(0)
-            temp.append(np.pi/4*math.cos(x) - np.pi/2)
-            temp.append(3*np.pi/2)
+            temp.append(-np.pi / 2)
+            temp.append(3 * np.pi / 2)
             temp.append(0)
             final_array.append(temp)
             temp = []
-        elif x >= 5*np.pi/2:
-            temp.append(np.pi/2)
-            temp.append(-np.pi/2)
-            temp.append(np.pi/4*math.cos(x - 0.5))
-            temp.append(np.pi/4*math.cos(x) - np.pi/2)
-            temp.append(3*np.pi/2)
+        elif x >= 9 * np.pi / 2:
+            temp.append(np.pi / 2)
+            temp.append(-np.pi / 2)
+            temp.append(0)
+            temp.append(np.pi / 4 * math.cos(x) - np.pi / 2)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        elif x >= 5 * np.pi / 2:
+            temp.append(np.pi / 2)
+            temp.append(-np.pi / 2)
+            temp.append(np.pi / 4 * math.cos(x - 0.5))
+            temp.append(np.pi / 4 * math.cos(x) - np.pi / 2)
+            temp.append(3 * np.pi / 2)
             temp.append(0)
             final_array.append(temp)
             temp = []
         else:
-            temp.append(np.pi/2)
-            temp.append(np.pi/6*math.cos(x) - np.pi/2)
-            temp.append(np.pi/4*math.cos(x- 0.5))
-            temp.append(np.pi/4*math.cos(x) - np.pi/2)
-            temp.append(3*np.pi/2)
+            temp.append(np.pi / 2)
+            temp.append(np.pi / 6 * math.cos(x) - np.pi / 2)
+            temp.append(np.pi / 4 * math.cos(x - 0.5))
+            temp.append(np.pi / 4 * math.cos(x) - np.pi / 2)
+            temp.append(3 * np.pi / 2)
             temp.append(0)
             final_array.append(temp)
             temp = []
     return final_array
+
 
 def waltz(self, config_dict):
     test = config_dict["param0"]
     temp = []
     final_array = []
     for i in range(10):
-        for x in np.arange(0,np.pi, np.pi/40):
-            temp.append(np.pi/2)
-            temp.append(np.pi/6*math.cos(x) - np.pi/2)
+        for x in np.arange(0, np.pi, np.pi / 40):
+            temp.append(np.pi / 2)
+            temp.append(np.pi / 6 * math.cos(x) - np.pi / 2)
             temp.append(0)
-            temp.append(3*np.pi/2)
-            temp.append(0)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-        for x in np.arange(0,np.pi, np.pi/40):
-            temp.append(np.pi/2)
-            temp.append(np.pi/12*math.cos(2*x-np.pi) - 7*np.pi/12)
-            temp.append(0)
-            temp.append(3*np.pi/2)
+            temp.append(3 * np.pi / 2)
             temp.append(0)
             temp.append(0)
             final_array.append(temp)
             temp = []
-        for x in np.arange(0,np.pi, np.pi/40):
-            temp.append(np.pi/2)
-            temp.append(np.pi/6*math.cos(x-np.pi) - np.pi/2)
+        for x in np.arange(0, np.pi, np.pi / 40):
+            temp.append(np.pi / 2)
+            temp.append(np.pi / 12 * math.cos(2 * x - np.pi) - 7 * np.pi / 12)
             temp.append(0)
-            temp.append(3*np.pi/2)
+            temp.append(3 * np.pi / 2)
             temp.append(0)
             temp.append(0)
             final_array.append(temp)
             temp = []
-        for x in np.arange(0,np.pi, np.pi/40):
-            temp.append(np.pi/2)
-            temp.append(np.pi/12*math.cos(2*x) - 5*np.pi/12)
+        for x in np.arange(0, np.pi, np.pi / 40):
+            temp.append(np.pi / 2)
+            temp.append(np.pi / 6 * math.cos(x - np.pi) - np.pi / 2)
             temp.append(0)
-            temp.append(3*np.pi/2)
+            temp.append(3 * np.pi / 2)
             temp.append(0)
             temp.append(0)
             final_array.append(temp)
-            temp = []	
+            temp = []
+        for x in np.arange(0, np.pi, np.pi / 40):
+            temp.append(np.pi / 2)
+            temp.append(np.pi / 12 * math.cos(2 * x) - 5 * np.pi / 12)
+            temp.append(0)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
     return final_array
 
+
 def one_joint_at_a_time(robot):
-	pan = []
-	lift = []
-	elbow = []
-	wrist1 = []
-	wrist2 = []
-	wrist3 = []
-	prev_pan = np.pi
-	prev_lift = -np.pi/3
-	prev_elbow = np.pi/6
-	prev_w1 = np.pi
-	prev_w2 = 3*np.pi/2
-	prev_w3 = 0
-	prev = [prev_pan, prev_lift, prev_elbow, prev_w1, prev_w2, prev_w3]
-	limbs = [pan, lift, elbow, wrist1, wrist2, wrist3]
-	for j in range(20):
-		index = np.random.randint(0,6)
-		value = np.random.uniform(-np.pi/8,np.pi/8)
-		i = 0
-		while i < 6:
-			if i == index:
-				limbs[index].append(prev[index] + value)
-			else:			
-				limbs[i].append(prev[i])
-			i+=1
-		#time.sleep(2)
+    pan = []
+    lift = []
+    elbow = []
+    wrist1 = []
+    wrist2 = []
+    wrist3 = []
+    prev_pan = np.pi
+    prev_lift = -np.pi / 3
+    prev_elbow = np.pi / 6
+    prev_w1 = np.pi
+    prev_w2 = 3 * np.pi / 2
+    prev_w3 = 0
+    prev = [prev_pan, prev_lift, prev_elbow, prev_w1, prev_w2, prev_w3]
+    limbs = [pan, lift, elbow, wrist1, wrist2, wrist3]
+    for j in range(20):
+        index = np.random.randint(0, 6)
+        value = np.random.uniform(-np.pi / 8, np.pi / 8)
+        i = 0
+        while i < 6:
+            if i == index:
+                limbs[index].append(prev[index] + value)
+            else:
+                limbs[i].append(prev[i])
+            i += 1
+        # time.sleep(2)
+
 
 def random_pointing(self):  # gripper CLOSED
     final_array = []
@@ -589,7 +592,9 @@ def random_pointing(self):  # gripper CLOSED
         # transition
         pan_slope, pan_intercept = self.get_line(0, prev_pan, 2 * np.pi, pan_angle)
         lift_slope, lift_intercept = self.get_line(0, prev_lift, 2 * np.pi, lift_angle)
-        elbow_slope, elbow_intercept = self.get_line(0, prev_elbow, 2 * np.pi, elbow_angle)
+        elbow_slope, elbow_intercept = self.get_line(
+            0, prev_elbow, 2 * np.pi, elbow_angle
+        )
         w1_slope, w1_intercept = self.get_line(0, prev_w1, 2 * np.pi, wrist1_angle)
 
         prev_pan = pan_angle
