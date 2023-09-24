@@ -3,6 +3,7 @@ from streamlit_sortables import sort_items
 import json
 from copy import deepcopy
 from duet.visualize.visualizer import Motifs, Visualizer
+import numpy as np
 import pdb
 
 with open("config/motifs.json", "r") as r:
@@ -128,9 +129,13 @@ if not st.session_state["modifying"]:
             for m in motif_names:
                 param_dict = st.session_state["config"][m]
                 func = getattr(traj_creator, param_dict["type"])
-                trajectory.extend(func(param_dict["params"]))
+                new_joint_angles = func(param_dict["params"])
+                print(len(new_joint_angles[0]))
+                trajectory.append(np.array(new_joint_angles))
             st.markdown("### Generated trajectory:")
             st.write(trajectory)
+            for i, t in enumerate(trajectory):
+                np.savetxt(f"drive/{motif_names[i]}.txt", t)
             st.session_state["visualizer_figs"] = st.session_state[
                 "visualizer"
             ].visualize(trajectory)

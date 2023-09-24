@@ -56,6 +56,7 @@ class Motifs:
             temp.append(np.pi / 10 * math.cos(x) + 8 * np.pi / 7)
             temp.append(3 * np.pi / 2)
             temp.append(0)
+            temp.append(0)
             final_array.append(temp)
             temp = []
         return final_array
@@ -86,6 +87,7 @@ class Motifs:
             temp.append(np.pi / 12 * math.cos(x - np.pi / 2) + 1.15 * np.pi)
             temp.append(3 * np.pi / 2)
             temp.append(0)
+            temp.append(0)
             final_array.append(temp)
             temp = []
         return final_array
@@ -100,6 +102,7 @@ class Motifs:
             temp.append(np.pi / 6 * math.cos(x) - np.pi / 2)
             temp.append(5 * np.pi / 4)
             temp.append(3 * np.pi / 2)
+            temp.append(0)
             temp.append(0)
             final_array.append(temp)
             temp = []
@@ -210,6 +213,7 @@ class Motifs:
             temp.append(np.pi / 48 * math.cos(x) + np.pi / 4)
             temp.append(7 * np.pi / 6)
             temp.append(3 * np.pi / 2)
+            temp.append(0)
             temp.append(0)
             final_array.append(temp)
             temp = []
