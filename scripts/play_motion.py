@@ -7,16 +7,18 @@ import cowsay
 import pdb
 
 robot = ur5py.UR5Robot("172.22.22.3")
-paths = [
-    "drive/yes.txt",
-    "drive/no.txt",
-    "drive/yes2.txt",
-    "drive/yes3.txt",
-    "drive/no2.txt",
-    "drive/pointing.txt",
-    "drive/stir.txt",
-    "drive/hammer.txt",
-]
+# paths = [
+#     "drive/yes.txt",
+#     "drive/no.txt",
+#     "drive/yes2.txt",
+#     "drive/yes3.txt",
+#     "drive/no2.txt",
+#     "drive/pointing.txt",
+#     "drive/stir.txt",
+#     "drive/hammer.txt",
+# ]
+paths = ["drive/pointing.txt"]
+pdb.set_trace()
 plans = [np.loadtxt(p)[:, :-1] for p in paths]
 
 for i, plan in enumerate(plans):

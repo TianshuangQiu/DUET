@@ -436,203 +436,152 @@ class Motifs:
         return final_array
 
 
-def stop_each_joint(self, config_dict):
-    # lift = []
-    # elbow = []
-    # wrist1 = []
-    # wrist2 = []
-    test = config_dict["param0"]
-    temp = []
-    final_array = []
-    for x in np.arange(0, 10 * np.pi, np.pi / 8):
-        if x >= 15 * np.pi / 2:
-            temp.append(np.pi / 2)
-            temp.append(-np.pi / 2)
-            temp.append(0)
-            temp.append(-np.pi / 2)
-            temp.append(3 * np.pi / 2)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-        elif x >= 9 * np.pi / 2:
-            temp.append(np.pi / 2)
-            temp.append(-np.pi / 2)
-            temp.append(0)
-            temp.append(np.pi / 4 * math.cos(x) - np.pi / 2)
-            temp.append(3 * np.pi / 2)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-        elif x >= 5 * np.pi / 2:
-            temp.append(np.pi / 2)
-            temp.append(-np.pi / 2)
-            temp.append(np.pi / 4 * math.cos(x - 0.5))
-            temp.append(np.pi / 4 * math.cos(x) - np.pi / 2)
-            temp.append(3 * np.pi / 2)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-        else:
-            temp.append(np.pi / 2)
-            temp.append(np.pi / 6 * math.cos(x) - np.pi / 2)
-            temp.append(np.pi / 4 * math.cos(x - 0.5))
-            temp.append(np.pi / 4 * math.cos(x) - np.pi / 2)
-            temp.append(3 * np.pi / 2)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-    return final_array
-
-
-def waltz(self, config_dict):
-    test = config_dict["param0"]
-    temp = []
-    final_array = []
-    for i in range(10):
-        for x in np.arange(0, np.pi, np.pi / 40):
-            temp.append(np.pi / 2)
-            temp.append(np.pi / 6 * math.cos(x) - np.pi / 2)
-            temp.append(0)
-            temp.append(3 * np.pi / 2)
-            temp.append(0)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-        for x in np.arange(0, np.pi, np.pi / 40):
-            temp.append(np.pi / 2)
-            temp.append(np.pi / 12 * math.cos(2 * x - np.pi) - 7 * np.pi / 12)
-            temp.append(0)
-            temp.append(3 * np.pi / 2)
-            temp.append(0)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-        for x in np.arange(0, np.pi, np.pi / 40):
-            temp.append(np.pi / 2)
-            temp.append(np.pi / 6 * math.cos(x - np.pi) - np.pi / 2)
-            temp.append(0)
-            temp.append(3 * np.pi / 2)
-            temp.append(0)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-        for x in np.arange(0, np.pi, np.pi / 40):
-            temp.append(np.pi / 2)
-            temp.append(np.pi / 12 * math.cos(2 * x) - 5 * np.pi / 12)
-            temp.append(0)
-            temp.append(3 * np.pi / 2)
-            temp.append(0)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-    return final_array
-
-
-def one_joint_at_a_time(self, config_dict):
-    pan = []
-    lift = []
-    elbow = []
-    wrist1 = []
-    wrist2 = []
-    wrist3 = []
-    prev_pan = np.pi
-    prev_lift = -np.pi / 3
-    prev_elbow = np.pi / 6
-    prev_w1 = np.pi
-    prev_w2 = 3 * np.pi / 2
-    prev_w3 = 0
-    prev = [prev_pan, prev_lift, prev_elbow, prev_w1, prev_w2, prev_w3]
-    limbs = [pan, lift, elbow, wrist1, wrist2, wrist3]
-    for j in range(20):
-        index = np.random.randint(0, 6)
-        value = np.random.uniform(-np.pi / 8, np.pi / 8)
-        i = 0
-        while i < 6:
-            if i == index:
-                limbs[index].append(prev[index] + value)
+    def stop_each_joint(self, config_dict):
+        # lift = []
+        # elbow = []
+        # wrist1 = []
+        # wrist2 = []
+        test = config_dict["param0"]
+        temp = []
+        final_array = []
+        for x in np.arange(0, 10 * np.pi, np.pi / 8):
+            if x >= 15 * np.pi / 2:
+                temp.append(np.pi / 2)
+                temp.append(-np.pi / 2)
+                temp.append(0)
+                temp.append(-np.pi / 2)
+                temp.append(3 * np.pi / 2)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+            elif x >= 9 * np.pi / 2:
+                temp.append(np.pi / 2)
+                temp.append(-np.pi / 2)
+                temp.append(0)
+                temp.append(np.pi / 4 * math.cos(x) - np.pi / 2)
+                temp.append(3 * np.pi / 2)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+            elif x >= 5 * np.pi / 2:
+                temp.append(np.pi / 2)
+                temp.append(-np.pi / 2)
+                temp.append(np.pi / 4 * math.cos(x - 0.5))
+                temp.append(np.pi / 4 * math.cos(x) - np.pi / 2)
+                temp.append(3 * np.pi / 2)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
             else:
-                limbs[i].append(prev[i])
-            i += 1
-        # time.sleep(2)
+                temp.append(np.pi / 2)
+                temp.append(np.pi / 6 * math.cos(x) - np.pi / 2)
+                temp.append(np.pi / 4 * math.cos(x - 0.5))
+                temp.append(np.pi / 4 * math.cos(x) - np.pi / 2)
+                temp.append(3 * np.pi / 2)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+        return final_array
 
 
-def random_pointing(self):  # gripper CLOSED
-    final_array = []
-    temp = []
+    def waltz(self, config_dict):
+        test = config_dict["param0"]
+        temp = []
+        final_array = []
+        for i in range(10):
+            for x in np.arange(0, np.pi, np.pi / 40):
+                temp.append(np.pi / 2)
+                temp.append(np.pi / 6 * math.cos(x) - np.pi / 2)
+                temp.append(0)
+                temp.append(3 * np.pi / 2)
+                temp.append(0)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+            for x in np.arange(0, np.pi, np.pi / 40):
+                temp.append(np.pi / 2)
+                temp.append(np.pi / 12 * math.cos(2 * x - np.pi) - 7 * np.pi / 12)
+                temp.append(0)
+                temp.append(3 * np.pi / 2)
+                temp.append(0)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+            for x in np.arange(0, np.pi, np.pi / 40):
+                temp.append(np.pi / 2)
+                temp.append(np.pi / 6 * math.cos(x - np.pi) - np.pi / 2)
+                temp.append(0)
+                temp.append(3 * np.pi / 2)
+                temp.append(0)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+            for x in np.arange(0, np.pi, np.pi / 40):
+                temp.append(np.pi / 2)
+                temp.append(np.pi / 12 * math.cos(2 * x) - 5 * np.pi / 12)
+                temp.append(0)
+                temp.append(3 * np.pi / 2)
+                temp.append(0)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+        return final_array
 
-    # first pose
-    prev_pan = pan_angle = uniform(3 * np.pi / 4, 5 * np.pi / 4)
-    prev_lift = lift_angle = uniform(-np.pi / 3, -np.pi / 7)
-    if lift_angle < -np.pi / 4:
-        prev_elbow = elbow_angle = uniform(np.pi / 10, np.pi / 3)
-    else:
-        prev_elbow = elbow_angle = uniform(-np.pi / 4, np.pi / 10)
-    prev_w1 = wrist1_angle = uniform(-np.pi / 4 - np.pi, -np.pi + np.pi / 4)
-    # go to first pose
-    temp.append(pan_angle)
-    temp.append(lift_angle)
-    temp.append(elbow_angle)
-    temp.append(wrist1_angle)
-    temp.append(3 * np.pi / 2)
-    temp.append(0)
-    final_array.append(temp)
-    temp = []
-    # point
-    if wrist1_angle > -np.pi:
-        lift_delta = 0.2
-    else:
-        lift_delta = -0.2
-    for x in np.arange(0, 4 * np.pi, np.pi / 40):
-        temp.append(pan_angle)
-        if x > 2 * np.pi:
-            temp.append(lift_angle)
+
+    def one_joint_at_a_time(self, config_dict):
+        pan = []
+        lift = []
+        elbow = []
+        wrist1 = []
+        wrist2 = []
+        wrist3 = []
+        prev_pan = np.pi
+        prev_lift = -np.pi / 3
+        prev_elbow = np.pi / 6
+        prev_w1 = np.pi
+        prev_w2 = 3 * np.pi / 2
+        prev_w3 = 0
+        prev = [prev_pan, prev_lift, prev_elbow, prev_w1, prev_w2, prev_w3]
+        limbs = [pan, lift, elbow, wrist1, wrist2, wrist3]
+        for j in range(20):
+            index = np.random.randint(0, 6)
+            value = np.random.uniform(-np.pi / 8, np.pi / 8)
+            i = 0
+            while i < 6:
+                if i == index:
+                    limbs[index].append(prev[index] + value)
+                else:
+                    limbs[i].append(prev[i])
+                i += 1
+            # time.sleep(2)
+
+
+    def random_pointing(self):  # gripper CLOSED
+        final_array = []
+        temp = []
+
+        # first pose
+        prev_pan = pan_angle = uniform(3 * np.pi / 4, 5 * np.pi / 4)
+        prev_lift = lift_angle = uniform(-np.pi / 3, -np.pi / 7)
+        if lift_angle < -np.pi / 4:
+            prev_elbow = elbow_angle = uniform(np.pi / 10, np.pi / 3)
         else:
-            temp.append(lift_angle)
+            prev_elbow = elbow_angle = uniform(-np.pi / 4, np.pi / 10)
+        prev_w1 = wrist1_angle = uniform(-np.pi / 4 - np.pi, -np.pi + np.pi / 4)
+        # go to first pose
+        temp.append(pan_angle)
+        temp.append(lift_angle)
         temp.append(elbow_angle)
         temp.append(wrist1_angle)
         temp.append(3 * np.pi / 2)
         temp.append(0)
         final_array.append(temp)
         temp = []
-
-    for x in range(120):
-        # new pos
-        pan_angle = uniform(3 * np.pi / 4, 5 * np.pi / 4)
-        lift_angle = uniform(-np.pi / 3, -np.pi / 4)
-        if lift_angle < -np.pi / 4:
-            elbow_angle = uniform(np.pi / 10, np.pi / 4)
-        else:
-            elbow_angle = uniform(-np.pi / 4, np.pi / 10)
-        wrist1_angle = uniform(-np.pi / 4 - np.pi, -np.pi + np.pi / 4)
+        # point
         if wrist1_angle > -np.pi:
             lift_delta = 0.2
         else:
             lift_delta = -0.2
-
-        # transition
-        pan_slope, pan_intercept = self.get_line(0, prev_pan, 2 * np.pi, pan_angle)
-        lift_slope, lift_intercept = self.get_line(0, prev_lift, 2 * np.pi, lift_angle)
-        elbow_slope, elbow_intercept = self.get_line(
-            0, prev_elbow, 2 * np.pi, elbow_angle
-        )
-        w1_slope, w1_intercept = self.get_line(0, prev_w1, 2 * np.pi, wrist1_angle)
-
-        prev_pan = pan_angle
-        prev_lift = lift_angle
-        prev_elbow = elbow_angle
-        prev_w1 = wrist1_angle
-
-        for x in np.arange(0, 2 * np.pi, np.pi / 40):
-            temp.append(pan_slope * x + pan_intercept)
-            temp.append(lift_slope * x + lift_intercept)
-            temp.append(elbow_slope * x + elbow_intercept)
-            temp.append(w1_slope * x + w1_intercept)
-            temp.append(3 * np.pi / 2)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-
-        # point
         for x in np.arange(0, 4 * np.pi, np.pi / 40):
             temp.append(pan_angle)
             if x > 2 * np.pi:
@@ -645,7 +594,58 @@ def random_pointing(self):  # gripper CLOSED
             temp.append(0)
             final_array.append(temp)
             temp = []
-    return final_array
+
+        for x in range(120):
+            # new pos
+            pan_angle = uniform(3 * np.pi / 4, 5 * np.pi / 4)
+            lift_angle = uniform(-np.pi / 3, -np.pi / 4)
+            if lift_angle < -np.pi / 4:
+                elbow_angle = uniform(np.pi / 10, np.pi / 4)
+            else:
+                elbow_angle = uniform(-np.pi / 4, np.pi / 10)
+            wrist1_angle = uniform(-np.pi / 4 - np.pi, -np.pi + np.pi / 4)
+            if wrist1_angle > -np.pi:
+                lift_delta = 0.2
+            else:
+                lift_delta = -0.2
+
+            # transition
+            pan_slope, pan_intercept = self.get_line(0, prev_pan, 2 * np.pi, pan_angle)
+            lift_slope, lift_intercept = self.get_line(0, prev_lift, 2 * np.pi, lift_angle)
+            elbow_slope, elbow_intercept = self.get_line(
+                0, prev_elbow, 2 * np.pi, elbow_angle
+            )
+            w1_slope, w1_intercept = self.get_line(0, prev_w1, 2 * np.pi, wrist1_angle)
+
+            prev_pan = pan_angle
+            prev_lift = lift_angle
+            prev_elbow = elbow_angle
+            prev_w1 = wrist1_angle
+
+            for x in np.arange(0, 2 * np.pi, np.pi / 40):
+                temp.append(pan_slope * x + pan_intercept)
+                temp.append(lift_slope * x + lift_intercept)
+                temp.append(elbow_slope * x + elbow_intercept)
+                temp.append(w1_slope * x + w1_intercept)
+                temp.append(3 * np.pi / 2)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+
+            # point
+            for x in np.arange(0, 4 * np.pi, np.pi / 40):
+                temp.append(pan_angle)
+                if x > 2 * np.pi:
+                    temp.append(lift_angle)
+                else:
+                    temp.append(lift_angle)
+                temp.append(elbow_angle)
+                temp.append(wrist1_angle)
+                temp.append(3 * np.pi / 2)
+                temp.append(0)
+                final_array.append(temp)
+                temp = []
+        return final_array
 
 
 class Visualizer:
