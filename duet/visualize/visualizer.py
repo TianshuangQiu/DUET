@@ -6,6 +6,9 @@ from random import uniform, choice
 import kinpy as kp
 import plotly.graph_objects as go
 import plotly.express as px
+import pdb
+from urdfpy import URDF
+from matplotlib.animation import FuncAnimation
 from matplotlib import pyplot as plt
 
 
@@ -192,6 +195,7 @@ class Motifs:
                 amp * math.cos(x) + 7 * np.pi / 6,
                 3 * np.pi / 2,
                 0,
+                1,
             ]
             final_array.append(temp)
         return final_array
@@ -222,6 +226,7 @@ class Motifs:
             temp.append(8 * np.pi / 7)
             temp.append(amp * math.cos(x) + 3 * np.pi / 2)
             temp.append(0)
+            temp.append(1)
             final_array.append(temp)
             temp = []
         return final_array
@@ -530,17 +535,56 @@ def one_joint_at_a_time(robot):
 
 
 class Visualizer:
-    def __init__(self, robot_file="ur5/ur5.urdf") -> None:
-        self.robot = kp.build_chain_from_urdf(open(robot_file).read())
+    def __init__(self, robot_file="ur5/ur_with_gripper.xacro") -> None:
+        # self.robot = kp.build_chain_from_urdf(open(robot_file).read())
+        self.robot = URDF.load(robot_file)
 
-    def visualize(self, waypoints):
-        df = pd.DataFrame(columns=["frame", "x", "y", "z"])
-        for i, w in enumerate(waypoints):
-            transform_dict = self.robot.forward_kinematics(w)
-            for j, k in enumerate(transform_dict.keys()):
-                if j == len(transform_dict) - 1:
-                    continue
-                df.loc[len(df)] = [i, *transform_dict[k].pos]
+    def _visualize(self, theta):
+        df = pd.DataFrame(columns=["x", "y", "z"])
+        gf_l = pd.DataFrame(columns=["x", "y", "z"])
+        gf_r = pd.DataFrame(columns=["x", "y", "z"])
+        gk_l = pd.DataFrame(columns=["x", "y", "z"])
+        gk_r = pd.DataFrame(columns=["x", "y", "z"])
+        transform_dict = self.robot.link_fk(theta)
+        keys = list(transform_dict.keys())
+        robot_key_order = [
+            "world",
+            "base_link",
+            "shoulder_link",
+            "upper_arm_link",
+            "forearm_link",
+            "wrist_1_link",
+            "wrist_2_link",
+            "wrist_3_link",
+            "ee_link",
+        ]
+        gripper_key_order = [
+            "robotiq_85_base_link",
+            "robotiq_85_left_knuckle_link",
+            "robotiq_85_left_finger_link",
+            "robotiq_85_left_inner_knuckle_link",
+            "robotiq_85_left_finger_tip_link",
+            "robotiq_85_right_knuckle_link",
+            "robotiq_85_right_finger_link",
+            "robotiq_85_right_inner_knuckle_link",
+            "robotiq_85_right_finger_tip_link",
+        ]
+        for i in range(0, 9):
+            # Get position
+            df.loc[len(df)] = [*transform_dict[keys[i]][:3, 3]]
+
+        for i in [9, 10, 14]:
+            gf_l.loc[len(gf_l)] = [*transform_dict[keys[i]][:3, 3]]
+
+        for i in [9, 12, 16]:
+            gf_r.loc[len(gf_r)] = [*transform_dict[keys[i]][:3, 3]]
+
+        for i in [9, 11, 15]:
+            gk_l.loc[len(gk_l)] = [*transform_dict[keys[i]][:3, 3]]
+
+        for i in [9, 13, 17]:
+            gk_r.loc[len(gk_r)] = [*transform_dict[keys[i]][:3, 3]]
+
         # fig = px.line_3d(
         #     df,
         #     x="x",
@@ -551,37 +595,99 @@ class Visualizer:
         #     range_y=[-1, 1],
         #     range_z=[-0.5, 1],
         # )
-        frames = [
-            go.Frame(
-                data=go.Scatter3d(
-                    x=df[df["frame"] == k]["x"],
-                    y=df[df["frame"] == k]["y"],
-                    z=df[df["frame"] == k]["z"],
-                    marker=dict(
-                        size=4,
-                    ),
-                    line=dict(color="darkblue", width=5),
-                ),
-                layout=go.Layout(
-                    yaxis=dict(range=[-1, 1]),
-                ),
-            )
-            for k in df["frame"].unique()
-        ]
         fig = go.Figure(
-            data=[go.Scatter3d()],
-            layout=go.Layout(  # Styling
-                scene=dict(),
-                updatemenus=[
-                    dict(
-                        type="buttons",
-                        buttons=[dict(label="Play", method="animate", args=[None])],
-                    )
-                ],
-                yaxis=dict(range=[-1, 1]),
-            ),
-            frames=frames,
+            data=[
+                go.Scatter3d(
+                    x=df["x"],
+                    y=df["y"],
+                    z=df["z"],
+                    mode="lines+markers",
+                    line={"color": "blue", "dash": "solid", "width": 15},
+                    marker=dict(
+                        size=5,
+                        color="red",
+                        opacity=0.8,
+                    ),
+                    showlegend=False,
+                ),
+                go.Scatter3d(
+                    x=gf_l["x"],
+                    y=gf_l["y"],
+                    z=gf_l["z"],
+                    mode="lines",
+                    line={"color": "blue", "dash": "solid", "width": 5},
+                    marker=dict(
+                        size=15,
+                        color="red",
+                        opacity=0.8,
+                    ),
+                    showlegend=False,
+                ),
+                go.Scatter3d(
+                    x=gf_r["x"],
+                    y=gf_r["y"],
+                    z=gf_r["z"],
+                    mode="lines",
+                    line={"color": "blue", "dash": "solid", "width": 5},
+                    marker=dict(
+                        size=15,
+                        color="red",
+                        opacity=0.8,
+                    ),
+                    showlegend=False,
+                ),
+                go.Scatter3d(
+                    x=gk_r["x"],
+                    y=gk_r["y"],
+                    z=gk_r["z"],
+                    mode="lines",
+                    line={"color": "blue", "dash": "solid", "width": 5},
+                    marker=dict(
+                        size=15,
+                        color="red",
+                        opacity=0.8,
+                    ),
+                    showlegend=False,
+                ),
+                go.Scatter3d(
+                    x=gk_l["x"],
+                    y=gk_l["y"],
+                    z=gk_l["z"],
+                    mode="lines",
+                    line={"color": "blue", "dash": "solid", "width": 5},
+                    marker=dict(
+                        size=15,
+                        color="red",
+                        opacity=0.8,
+                    ),
+                    showlegend=False,
+                ),
+            ]
         )
-        # fig.layout.updatemenus[0].buttons[0].args[0]["frame"]["duration"] = 30
-        # fig.layout.updatemenus[0].buttons[0].args[0]["transition"]["duration"] = 5
+
+        fig.update_layout(
+            scene=dict(
+                xaxis=dict(
+                    nticks=0,
+                    range=[-1, 1],
+                ),
+                yaxis=dict(
+                    nticks=0,
+                    range=[-1, 1],
+                ),
+                zaxis=dict(
+                    nticks=0,
+                    range=[-0.5, 1],
+                ),
+                aspectratio=dict(x=2, y=2, z=1),
+                aspectmode="manual",
+            ),
+        )
+
         return fig
+
+    def visualize(self, waypoints):
+        figs = []
+        for w in waypoints:
+            figs.append(self._visualize(w))
+        return figs

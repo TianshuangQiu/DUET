@@ -100,7 +100,11 @@ if not st.session_state["modifying"]:
             else:
                 st.session_state["modifying"] = True
                 st.experimental_rerun()
-
+        remove = st.button("remove last motif")
+        if remove:
+            rm_conf = st.session_state["ordering"].pop(-1)
+            st.session_state["config"].pop(rm_conf)
+            st.experimental_rerun()
     elif st.session_state["phase"] == 2:
         st.markdown("### Select range for visualization")
         vis_range = st.slider(
@@ -127,8 +131,14 @@ if not st.session_state["modifying"]:
                 trajectory.extend(func(param_dict["params"]))
             st.markdown("### Generated trajectory:")
             st.write(trajectory)
-            st.plotly_chart(st.session_state["visualizer"].visualize(trajectory))
+            st.session_state["visualizer_figs"] = st.session_state[
+                "visualizer"
+            ].visualize(trajectory)
 
+        visualizer_figs = st.session_state.get("visualizer_figs", [None, None])
+        frame = st.slider("Frame", 0, len(visualizer_figs) - 1)
+        if visualizer_figs[frame] is not None:
+            st.plotly_chart(visualizer_figs[frame])
         save_file_name = st.text_input("Save Name", "tmp_save.json")
         save = st.button("Save Configuration")
 

@@ -1,6 +1,7 @@
 urx
 numpy==1.20
-pandas
+pandas==1.4
+scipy==1.7
 # torch
 matplotlib
 tqdm
@@ -9,3 +10,4 @@ cowsay
 streamlit
 streamlit-sortables
 plotly
+networkx==2.5
