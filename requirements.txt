@@ -6,7 +6,7 @@ scipy==1.7
 matplotlib
 tqdm
 cowsay
-# urdfpy
+urdfpy
 streamlit
 streamlit-sortables
 plotly
