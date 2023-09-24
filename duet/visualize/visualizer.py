@@ -533,7 +533,7 @@ def one_joint_at_a_time(robot):
 			i+=1
 		#time.sleep(2)
 
-def random_pointing():  # gripper CLOSED
+def random_pointing(self):  # gripper CLOSED
     final_array = []
     temp = []
 
@@ -587,10 +587,10 @@ def random_pointing():  # gripper CLOSED
             lift_delta = -0.2
 
         # transition
-        pan_slope, pan_intercept = get_line(0, prev_pan, 2 * np.pi, pan_angle)
-        lift_slope, lift_intercept = get_line(0, prev_lift, 2 * np.pi, lift_angle)
-        elbow_slope, elbow_intercept = get_line(0, prev_elbow, 2 * np.pi, elbow_angle)
-        w1_slope, w1_intercept = get_line(0, prev_w1, 2 * np.pi, wrist1_angle)
+        pan_slope, pan_intercept = self.get_line(0, prev_pan, 2 * np.pi, pan_angle)
+        lift_slope, lift_intercept = self.get_line(0, prev_lift, 2 * np.pi, lift_angle)
+        elbow_slope, elbow_intercept = self.get_line(0, prev_elbow, 2 * np.pi, elbow_angle)
+        w1_slope, w1_intercept = self.get_line(0, prev_w1, 2 * np.pi, wrist1_angle)
 
         prev_pan = pan_angle
         prev_lift = lift_angle
