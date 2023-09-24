@@ -25,12 +25,13 @@ class Motifs:
         test = config_dict["param0"]
         temp = []
         final_array = []
-        for x in np.arange(0, 12 * np.pi, np.pi / 40):
+        for x in np.arange(0, 24 * np.pi, np.pi / 40):
             temp.append(np.pi / 6 * math.cos(x) + np.pi)
             temp.append(np.pi / 10 * math.cos(x - np.pi / 2) - np.pi / 4)
             temp.append(np.pi / 4 * math.cos(x + np.pi / 2) + 7 * np.pi / 12)
             temp.append(np.pi / 12 * math.cos(x - np.pi / 2) + 1.15 * np.pi)
             temp.append(3 * np.pi / 2)
+            temp.append(0)
             temp.append(0)
             final_array.append(temp)
             temp = []
@@ -508,7 +509,7 @@ def waltz(self, config_dict):
     return final_array
 
 
-def one_joint_at_a_time(robot):
+def one_joint_at_a_time(self, config_dict):
     pan = []
     lift = []
     elbow = []
