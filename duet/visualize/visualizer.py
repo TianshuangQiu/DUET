@@ -533,6 +533,95 @@ def one_joint_at_a_time(robot):
 			i+=1
 		#time.sleep(2)
 
+def random_pointing():  # gripper CLOSED
+    final_array = []
+    temp = []
+
+    # first pose
+    prev_pan = pan_angle = uniform(3 * np.pi / 4, 5 * np.pi / 4)
+    prev_lift = lift_angle = uniform(-np.pi / 3, -np.pi / 7)
+    if lift_angle < -np.pi / 4:
+        prev_elbow = elbow_angle = uniform(np.pi / 10, np.pi / 3)
+    else:
+        prev_elbow = elbow_angle = uniform(-np.pi / 4, np.pi / 10)
+    prev_w1 = wrist1_angle = uniform(-np.pi / 4 - np.pi, -np.pi + np.pi / 4)
+    # go to first pose
+    temp.append(pan_angle)
+    temp.append(lift_angle)
+    temp.append(elbow_angle)
+    temp.append(wrist1_angle)
+    temp.append(3 * np.pi / 2)
+    temp.append(0)
+    final_array.append(temp)
+    temp = []
+    # point
+    if wrist1_angle > -np.pi:
+        lift_delta = 0.2
+    else:
+        lift_delta = -0.2
+    for x in np.arange(0, 4 * np.pi, np.pi / 40):
+        temp.append(pan_angle)
+        if x > 2 * np.pi:
+            temp.append(lift_angle)
+        else:
+            temp.append(lift_angle)
+        temp.append(elbow_angle)
+        temp.append(wrist1_angle)
+        temp.append(3 * np.pi / 2)
+        temp.append(0)
+        final_array.append(temp)
+        temp = []
+
+    for x in range(5):
+        # new pos
+        pan_angle = uniform(3 * np.pi / 4, 5 * np.pi / 4)
+        lift_angle = uniform(-np.pi / 3, -np.pi / 4)
+        if lift_angle < -np.pi / 4:
+            elbow_angle = uniform(np.pi / 10, np.pi / 4)
+        else:
+            elbow_angle = uniform(-np.pi / 4, np.pi / 10)
+        wrist1_angle = uniform(-np.pi / 4 - np.pi, -np.pi + np.pi / 4)
+        if wrist1_angle > -np.pi:
+            lift_delta = 0.2
+        else:
+            lift_delta = -0.2
+
+        # transition
+        pan_slope, pan_intercept = get_line(0, prev_pan, 2 * np.pi, pan_angle)
+        lift_slope, lift_intercept = get_line(0, prev_lift, 2 * np.pi, lift_angle)
+        elbow_slope, elbow_intercept = get_line(0, prev_elbow, 2 * np.pi, elbow_angle)
+        w1_slope, w1_intercept = get_line(0, prev_w1, 2 * np.pi, wrist1_angle)
+
+        prev_pan = pan_angle
+        prev_lift = lift_angle
+        prev_elbow = elbow_angle
+        prev_w1 = wrist1_angle
+
+        for x in np.arange(0, 2 * np.pi, np.pi / 40):
+            temp.append(pan_slope * x + pan_intercept)
+            temp.append(lift_slope * x + lift_intercept)
+            temp.append(elbow_slope * x + elbow_intercept)
+            temp.append(w1_slope * x + w1_intercept)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+
+        # point
+        for x in np.arange(0, 4 * np.pi, np.pi / 40):
+            temp.append(pan_angle)
+            if x > 2 * np.pi:
+                temp.append(lift_angle)
+            else:
+                temp.append(lift_angle)
+            temp.append(elbow_angle)
+            temp.append(wrist1_angle)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+    return final_array
+
 
 class Visualizer:
     def __init__(self, robot_file="ur5/ur_with_gripper.xacro") -> None:
