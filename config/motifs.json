@@ -118,5 +118,32 @@
         1.0
       ]
     }
+  },
+
+  "handing_object": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "stop_each_joint": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "waltz": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
   }
 }
