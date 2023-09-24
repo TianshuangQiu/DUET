@@ -13,5 +13,5 @@ plan = np.loadtxt(path)[::2, 1:7]
 
 robot.move_joint(plan[0], vel=1)
 for p in tqdm(plan):
-    robot.servo_joint(p, time=0.002)
-    time.sleep(0.002)
+    robot.servo_joint(p, time=0.01)
+    time.sleep(0.01)

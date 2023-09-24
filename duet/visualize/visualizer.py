@@ -25,7 +25,7 @@ class Motifs:
         test = config_dict["param0"]
         temp = []
         final_array = []
-        for x in np.arange(0, 24 * np.pi, np.pi / 40):
+        for x in np.arange(0, 200 * np.pi, np.pi / 40):
             temp.append(np.pi / 6 * math.cos(x) + np.pi)
             temp.append(np.pi / 10 * math.cos(x - np.pi / 2) - np.pi / 4)
             temp.append(np.pi / 4 * math.cos(x + np.pi / 2) + 7 * np.pi / 12)
@@ -49,7 +49,7 @@ class Motifs:
         vels = []
         acc = []
         blends = []
-        for x in np.arange(0, 12 * np.pi, np.pi / 40):
+        for x in np.arange(0, 150 * np.pi, np.pi / 40):
             temp.append(np.pi)
             temp.append(np.pi / 8 * math.cos(x - np.pi) - np.pi / 6)
             temp.append(np.pi / 20 * math.cos(x))
@@ -91,6 +91,21 @@ class Motifs:
         return final_array
 
     def hammer_wall(self, config_dict):
+        temp = []
+        test = config_dict["param0"]
+        final_array = []
+        for x in np.arange(0, 8 * np.pi, np.pi / 8):
+            temp.append(np.pi)
+            temp.append(np.pi / 8)
+            temp.append(np.pi / 6 * math.cos(x) - np.pi / 2)
+            temp.append(5 * np.pi / 4)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        return final_array
+
+    def hammer_floor(self, config_dict):
         temp = []
         test = config_dict["param0"]
         final_array = []
@@ -187,7 +202,7 @@ class Motifs:
     def yes(self, config_dict):
         amp = config_dict["amp"]
         final_array = []
-        for x in np.arange(0, 9 * np.pi / 2, np.pi / 40):
+        for x in np.arange(0, 9 * np.pi / 2 + np.pi/40, np.pi / 40):
             temp = [
                 np.pi,
                 -np.pi / 3,
@@ -219,11 +234,11 @@ class Motifs:
         amp = config_dict["amp"]
         final_array = []
         temp = []
-        for x in np.arange(0, 9 * np.pi / 2, np.pi / 40):
+        for x in np.arange(0, 9 * np.pi / 2 + np.pi/40, np.pi / 40):
             temp.append(np.pi)
             temp.append(-np.pi / 3)
             temp.append(np.pi / 4)
-            temp.append(8 * np.pi / 7)
+            temp.append(7 * np.pi / 6)
             temp.append(amp * math.cos(x) + 3 * np.pi / 2)
             temp.append(0)
             temp.append(1)
@@ -576,7 +591,7 @@ def random_pointing(self):  # gripper CLOSED
         final_array.append(temp)
         temp = []
 
-    for x in range(5):
+    for x in range(120):
         # new pos
         pan_angle = uniform(3 * np.pi / 4, 5 * np.pi / 4)
         lift_angle = uniform(-np.pi / 3, -np.pi / 4)
