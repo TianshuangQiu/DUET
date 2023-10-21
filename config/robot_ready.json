@@ -1,0 +1,47 @@
+{
+    "painter_vertical": {},
+    "cleaner_horizontal": {},
+    "circle_horizontal": {},
+    "hammer_wall": {},
+    "hammer_floor": {},
+    "screw_lightbulb": {},
+    "waving": {},
+    "metronome": {},
+    "circle_vertical": {},
+    "sweep_floor": {},
+    "yes": {
+        "params": {
+            "amp": [
+                0.2617,
+                1.047
+            ]
+        }
+    },
+    "pointing": {},
+    "no": {
+        "params": {
+            "amp": [
+                0.2617,
+                1.047
+            ]
+        }
+    },
+    "horizontal_tag": {},
+    "random_pointing": {},
+    "handing_object": {},
+    "stop_each_joint": {},
+    "waltz": {},
+    "bartender_shaking": {},
+    "bartender_pouring": {},
+    "box": {},
+    "bobbing_up_down": {},
+    "sawing": {
+        "params": {
+            "amp": [
+                0.1,
+                0.2
+            ]
+        }
+    },
+    "tug_of_war": {}
+}

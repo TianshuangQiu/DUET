@@ -529,6 +529,7 @@ class Motifs:
 
 
     def one_joint_at_a_time(self, config_dict):
+        test = config_dict["param0"]
         pan = []
         lift = []
         elbow = []
@@ -556,7 +557,8 @@ class Motifs:
             # time.sleep(2)
 
 
-    def random_pointing(self):  # gripper CLOSED
+    def random_pointing(self, config_dict):  # gripper CLOSED
+        test = config_dict["param0"]
         final_array = []
         temp = []
 
