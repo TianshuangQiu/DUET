@@ -1,40 +1,188 @@
 {
-    "painter_vertical": {},
-    "cleaner_horizontal": {},
-    "circle_horizontal": {},
-    "hammer_wall": {},
-    "hammer_floor": {},
-    "screw_lightbulb": {},
-    "waving": {},
-    "metronome": {},
-    "circle_vertical": {},
-    "sweep_floor": {},
+    "painter_vertical": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "cleaner_horizontal": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "circle_horizontal": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "hammer_wall": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "hammer_floor": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "screw_lightbulb": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "waving": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "metronome": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "circle_vertical": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "sweep_floor": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
     "yes": {
         "params": {
             "amp": [
                 0.2617,
                 1.047
+            ],
+            "wrist_flip": [
+                0,
+                1
             ]
         }
     },
-    "pointing": {},
+    "pointing": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
     "no": {
         "params": {
             "amp": [
                 0.2617,
                 1.047
+            ],
+            "wrist_flip": [
+                0,
+                1
             ]
         }
     },
-    "horizontal_tag": {},
-    "random_pointing": {},
-    "handing_object": {},
-    "stop_each_joint": {},
-    "waltz": {},
-    "bartender_shaking": {},
-    "bartender_pouring": {},
-    "box": {},
-    "bobbing_up_down": {},
+    "horizontal_tag": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "random_pointing": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "handing_object": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "stop_each_joint": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "waltz": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "bartender_shaking": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "bartender_pouring": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "box": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "bobbing_up_down": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
     "sawing": {
         "params": {
             "amp": [
@@ -43,5 +191,12 @@
             ]
         }
     },
-    "tug_of_war": {}
+    "tug_of_war": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    }
 }
