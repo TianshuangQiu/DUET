@@ -5,6 +5,10 @@ import math
 import pdb
 from tqdm import tqdm
 import cowsay
+import os
+import sympy
+import time
+import datetime
 from random import choice, uniform
 
 
@@ -32,23 +36,25 @@ def move_to_start(robot: UR5Robot, next_pose, wrist_flip=False):
             intermediate_pose[-1] = round_nearest(
                 prev_pose[-1], np.pi, offset=np.pi / 2
             )
-            robot.move_joint(intermediate_pose, vel=0.5)
+            if intermediate_pose[-1] == 2 * np.pi:
+                intermediate_pose[-1] -= np.pi
+            robot.move_joint(intermediate_pose, vel=1)
 
             # move to wrist 2 goal
             intermediate_pose[-3] = next_pose[-3]
-            robot.move_joint(intermediate_pose, vel=0.5)
+            robot.move_joint(intermediate_pose, vel=1)
 
             # move to neutral position for wrist 2
             intermediate_pose[-1] = round_nearest(intermediate_pose[-2], np.pi)
-            robot.move_joint(intermediate_pose, vel=0.5)
+            robot.move_joint(intermediate_pose, vel=1)
 
             # move to wrist 2 goal
             intermediate_pose[-2] = next_pose[-2]
-            robot.move_joint(intermediate_pose, vel=0.5)
+            robot.move_joint(intermediate_pose, vel=1)
 
             # move to wrist 3 goal
             intermediate_pose[-1] = next_pose[-1]
-            robot.move_joint(intermediate_pose, vel=0.5)
+            robot.move_joint(intermediate_pose, vel=1)
 
     robot.move_joint(next_pose)
 
@@ -300,6 +306,79 @@ def circle_vertical(wrist_flip: bool):
     return run_on_robot
 
 
+# Copied-
+def circle_vertical_gradual_increase():
+    final_array = []
+    temp = []
+    for x in np.arange(0, 170 * np.pi, np.pi / 40):
+        temp.append(np.pi / 10 * math.e ** (0.01 * x - 5) * math.cos(x) + np.pi)
+        temp.append(
+            np.pi / 12 * math.e ** (0.01 * x - 5) * math.cos(x - np.pi / 2) - np.pi / 4
+        )
+        temp.append(
+            np.pi / 12 * math.e ** (0.01 * x - 5) * math.cos(x - np.pi / 2) + np.pi / 6
+        )
+        temp.append(
+            np.pi / 10 * math.e ** (0.01 * x - 5) * math.cos(x - 3 * np.pi / 2)
+            + 7 * np.pi / 6
+        )
+        temp.append(3 * np.pi / 2)
+        temp.append(0)
+        final_array.append(temp)
+        temp = []
+    for x in np.arange(0, 20 * np.pi, np.pi / 40):
+        temp.append(
+            np.pi / 10 * math.e ** (0.01 * 170 * np.pi - 5) * math.cos(x) + np.pi
+        )
+        temp.append(
+            np.pi / 12 * math.e ** (0.01 * 170 * np.pi - 5) * math.cos(x - np.pi / 2)
+            - np.pi / 4
+        )
+        temp.append(
+            np.pi / 12 * math.e ** (0.01 * 170 * np.pi - 5) * math.cos(x - np.pi / 2)
+            + np.pi / 6
+        )
+        temp.append(
+            np.pi
+            / 10
+            * math.e ** (0.01 * 170 * np.pi - 5)
+            * math.cos(x - 3 * np.pi / 2)
+            + 7 * np.pi / 6
+        )
+        temp.append(3 * np.pi / 2)
+        temp.append(0)
+        final_array.append(temp)
+        temp = []
+
+    def run_on_robot(robot: UR5Robot):
+        robot.move_joint(final_array[0], vel=0.5)
+        for i, arr in enumerate(tqdm(final_array)):
+            robot.servo_joint(arr.tolist(), time=0.05)
+            time.sleep(0.05)
+        robot.stop_joint()
+
+    return run_on_robot
+
+
+# Copied- no run on robot?
+def circle_vertical_panning():
+    final_array = []
+    temp = []
+    flag = False
+    for x in np.arange(0, 32 * np.pi, np.pi / 40):
+        if x % np.pi == 0 and x % (2 * np.pi) != 0:
+            flag = True
+        temp.append(np.pi / 10 * math.cos(x) + np.pi)
+        temp.append(np.pi / 12 * math.cos(x - np.pi / 2) - np.pi / 4)
+        temp.append(np.pi / 12 * math.cos(x - np.pi / 2) + np.pi / 6)
+        temp.append(np.pi / 10 * math.cos(x - 3 * np.pi / 2) + 7 * np.pi / 6)
+        temp.append(3 * np.pi / 2)
+        temp.append(0)
+        final_array.append(temp)
+        temp = []
+    return final_array
+
+
 def sweep_floor(wrist_flip: bool):
     final_array = []
     temp = []
@@ -322,6 +401,58 @@ def sweep_floor(wrist_flip: bool):
         robot.stop_joint()
 
     return run_on_robot
+
+
+# Copied-
+def sweep_floor_increasing():
+    final_array = []
+    temp = []
+    for x in np.arange(0, 192 * np.pi, np.pi / 40):
+        temp.append(np.pi / 6 * math.e ** (-0.004 * x + 0.5) * math.cos(x) + np.pi)
+        temp.append(
+            np.pi / 7 * math.e ** (-0.004 * x + 0.5) * math.cos(x - np.pi / 2)
+            - np.pi / 3.2
+        )
+        temp.append(
+            np.pi / 6 * math.e ** (-0.004 * x + 0.5) * math.cos(x + np.pi / 2)
+            + 6 * np.pi / 12
+        )
+        temp.append(7 * np.pi / 6)
+        temp.append(np.pi / 7 * math.cos(x) + 4 * np.pi / 3)
+        temp.append(0)
+        final_array.append(temp)
+        temp = []
+
+        def run_on_robot(robot: UR5Robot):
+            robot.move_joint(final_array[0], vel=0.5)
+            count = 0
+            for i, arr in enumerate(tqdm(final_array)):
+                robot.servo_joint(arr.tolist(), time=0.05)
+                time.sleep(0.05)
+                if count == 2304:
+                    robot.stop_joint()
+                    robot.gripper.open()
+                    robot.gripper.close()
+                count += 1
+            robot.stop_joint()
+
+    return run_on_robot
+
+
+# Copied-no ror?
+def sweep_floor_panning():
+    final_array = []
+    temp = []
+    for x in np.arange(0, 32 * np.pi, np.pi / 40):
+        temp.append(np.pi / 6 * math.cos(x) + np.pi)
+        temp.append(np.pi / 14 * math.cos(x - np.pi / 2) - np.pi / 3)
+        temp.append(np.pi / 14 * math.cos(x + np.pi / 2) + 7 * np.pi / 12)
+        temp.append(7 * np.pi / 6)
+        temp.append(np.pi / 7 * math.cos(x) + 4 * np.pi / 3)
+        temp.append(0)
+        final_array.append(temp)
+        temp = []
+    return final_array
 
 
 def yes(amp, wrist_flip: bool):
@@ -399,39 +530,22 @@ def no(amp, wrist_flip: bool):
     return run_on_robot
 
 
-# def random_yes_no(ur):
-#     funcs = [yes, no]
-#     amp = uniform(np.pi / 12, np.pi / 3)
-#     final_array = choice(funcs)(amp)
-#     final_array = np.array(final_array)
-#     # ur = UR5Robot(gripper=True)
-#     ur.move_joint(final_array[0], vel=0.5)
-#     # for i, arr in enumerate(final_array):
-#     #     ur.servo_joint(arr.tolist(), acc=0.2, vel=0, time=0.05, lookahead_time=0.2)
-#     #     time.sleep(0.05)
-#     # ur.move_joint_path(
-#     #     final_array,
-#     #     vels=[0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
-#     #     accs=[0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
-#     #     blends=[0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
-#     # )
-#     for i, arr in enumerate(tqdm(final_array)):
-#         ur.servo_joint(arr.tolist(), time=0.04)
+def random_yes_no(amount: int, wrist_flip: bool):
+    amp_range = [0.2617, 1.047]
+    funcs = []
+    rand = np.random.random(amount)
+    for i in range(amount):
+        wf = i == 0 and wrist_flip
+        if rand[i] < 0.5:
+            funcs.append(yes(np.random.uniform(amp_range[0], amp_range[1]), wf))
+        else:
+            funcs.append(no(np.random.uniform(amp_range[0], amp_range[1]), wf))
 
-#     time.sleep(5)
+    def run_on_robot(robot: UR5Robot):
+        for i, f in enumerate(funcs):
+            f(robot)
 
-#     for i in range(28):
-#         amp = uniform(np.pi / 12, np.pi / 3.5)
-#         final_array = choice(funcs)(amp)
-#         final_array = np.array(final_array)
-#         for i, arr in enumerate(final_array):
-#             # t = 0.05
-#             # if i ==0:
-#             #     t = 0.5
-#             # ur.servo_joint(arr.tolist(), acc=0.2, vel=0, time=t, lookahead_time=0.2)
-#             ur.servo_joint(arr.tolist(), time=0.04)
-#             time.sleep(0.05)
-#         time.sleep(5)
+    return run_on_robot
 
 
 def horizontal_tag(wrist_flip: bool):  # add wrist flick up at each end
@@ -459,12 +573,23 @@ def horizontal_tag(wrist_flip: bool):  # add wrist flick up at each end
     return run_on_robot
 
 
-def random_pointing(wrist_flip: bool):  # gripper CLOSED
+def random_pointing(
+    wrist_flip: bool, in_plane, start_pause, end_pause
+):  # gripper CLOSED
     final_array = []
     temp = []
-
+    w2s, w2i = get_line(2 * np.pi / 3, 5.63, 4 * np.pi / 3, 3.78)
+    speed_up = False
+    if start_pause != end_pause:
+        speed_up = True
+    pause = start_pause
     # first pose
-    prev_pan = pan_angle = uniform(0, 2 * np.pi)
+    if in_plane:
+        prev_pan = pan_angle = uniform(2 * np.pi / 3, 4 * np.pi / 3)
+        prev_w2 = wrist2_angle = w2s * pan_angle + w2i
+    else:
+        prev_pan = pan_angle = uniform(0, 2 * np.pi)
+        prev_w2 = wrist2_angle = 3 * np.pi / 2
     prev_lift = lift_angle = uniform(-np.pi / 3, -np.pi / 7)
     if lift_angle < -np.pi / 4:
         prev_elbow = elbow_angle = uniform(np.pi / 10, np.pi / 3)
@@ -476,7 +601,7 @@ def random_pointing(wrist_flip: bool):  # gripper CLOSED
     temp.append(lift_angle)
     temp.append(elbow_angle)
     temp.append(wrist1_angle)
-    temp.append(3 * np.pi / 2)
+    temp.append(wrist2_angle)
     temp.append(0)
     final_array.append(temp)
     temp = []
@@ -485,7 +610,7 @@ def random_pointing(wrist_flip: bool):  # gripper CLOSED
         lift_delta = 0.2
     else:
         lift_delta = -0.2
-    for x in np.arange(0, 2 * np.pi, np.pi / 40):
+    for x in np.arange(0, pause, np.pi / 40):
         temp.append(pan_angle)
         if x > 2 * np.pi:
             temp.append(lift_angle)
@@ -493,14 +618,21 @@ def random_pointing(wrist_flip: bool):  # gripper CLOSED
             temp.append(lift_angle)
         temp.append(elbow_angle)
         temp.append(wrist1_angle)
-        temp.append(3 * np.pi / 2)
+        temp.append(wrist2_angle)
         temp.append(0)
         final_array.append(temp)
         temp = []
 
-    for x in range(25):
+    for x in range(9):
         # new pos
-        pan_angle = uniform(0, 2 * np.pi)
+        if speed_up:
+            pause -= (start_pause - end_pause) / 10
+        if in_plane:
+            pan_angle = uniform(2 * np.pi / 3, 4 * np.pi / 3)
+            wrist2_angle = w2s * pan_angle + w2i
+        else:
+            pan_angle = uniform(0, 2 * np.pi)
+            wrist2_angle = 3 * np.pi / 2
         lift_angle = uniform(-np.pi / 3, -np.pi / 4)
         if lift_angle < -np.pi / 4:
             elbow_angle = uniform(np.pi / 10, np.pi / 4)
@@ -517,24 +649,26 @@ def random_pointing(wrist_flip: bool):  # gripper CLOSED
         lift_slope, lift_intercept = get_line(0, prev_lift, 2 * np.pi, lift_angle)
         elbow_slope, elbow_intercept = get_line(0, prev_elbow, 2 * np.pi, elbow_angle)
         w1_slope, w1_intercept = get_line(0, prev_w1, 2 * np.pi, wrist1_angle)
+        w2_slope, w2_intercept = get_line(0, prev_w2, 2 * np.pi, wrist2_angle)
 
         prev_pan = pan_angle
         prev_lift = lift_angle
         prev_elbow = elbow_angle
         prev_w1 = wrist1_angle
+        prev_w2 = wrist2_angle
 
         for x in np.arange(0, 2 * np.pi, np.pi / 40):
             temp.append(pan_slope * x + pan_intercept)
             temp.append(lift_slope * x + lift_intercept)
             temp.append(elbow_slope * x + elbow_intercept)
             temp.append(w1_slope * x + w1_intercept)
-            temp.append(3 * np.pi / 2)
+            temp.append(w2_slope * x + w2_intercept)
             temp.append(0)
             final_array.append(temp)
             temp = []
 
         # point
-        for x in np.arange(0, 2 * np.pi, np.pi / 40):
+        for x in np.arange(0, pause, np.pi / 40):
             temp.append(pan_angle)
             if x > 2 * np.pi:
                 temp.append(lift_angle)
@@ -542,7 +676,7 @@ def random_pointing(wrist_flip: bool):  # gripper CLOSED
                 temp.append(lift_angle)
             temp.append(elbow_angle)
             temp.append(wrist1_angle)
-            temp.append(3 * np.pi / 2)
+            temp.append(wrist2_angle)
             temp.append(0)
             final_array.append(temp)
             temp = []
@@ -712,6 +846,33 @@ def handing_object(wrist_flip: bool):
     return run_on_robot
 
 
+# Copied-
+def vertical_lightbulb():
+    temp = []
+    final_array = []
+    offset = 0
+    for x in np.arange(0, 16 * np.pi, np.pi / 80):
+        temp.append(np.pi / 2)
+        temp.append(-np.pi / 2)
+        temp.append(0)
+        temp.append(np.pi)
+        temp.append(3 * np.pi / 2)
+        temp.append(np.pi / 6 * math.cos(x - offset))
+        final_array.append(temp)
+        temp = []
+        if x % np.pi == 0:
+            offset += np.pi
+
+    def run_on_robot(robot: UR5Robot):
+        robot.move_joint(final_array[0], vel=0.5)  # added
+        for i, arr in enumerate(tqdm(final_array)):
+            robot.servo_joint(arr.tolist(), time=0.03)
+            time.sleep(0.03)
+        robot.stop_joint()
+
+    return run_on_robot
+
+
 def stop_each_joint(
     wrist_flip: bool,
 ):  # change wrist1 to be in positive values not negative
@@ -743,7 +904,7 @@ def stop_each_joint(
         elif x >= 11 * np.pi / 2:
             temp.append(np.pi / 2)
             temp.append(-np.pi / 2)
-            temp.append(np.pi / 4 * math.cos(x))
+            temp.append(np.pi / 4 * math.cos(x - 0.6))
             temp.append(np.pi / 4 * math.cos(x - 0.6) - np.pi / 2)
             temp.append(3 * np.pi / 2)
             temp.append(0)
@@ -1070,3 +1231,68 @@ def tug_of_war(wrist_flip: bool):
         robot.end_force_mode()
 
     return run_on_robot
+
+
+def wait_for_tap():
+    def run_on_robot(robot: UR5Robot):
+        robot.change_gripper(2)
+        current_pose = robot.get_pose(convert=False)
+        # print(current_pose)
+        # angle = np.arctan2(current_pose[-2] ** 2, current_pose[-3] ** 2)
+        # pi_2 = np.pi**2
+        current_pose[-2] = 0
+        current_pose[-3] = 0
+        print(current_pose)
+        # current_pose[-1] = round_nearest(current_pose[-1], np.pi)
+        prev_force = None
+        robot.move_pose(current_pose, convert=False)
+        robot.gripper.open()
+        while True:
+            if prev_force is None:
+                prev_force = np.array(robot.get_current_force()[:3])
+                continue
+            curr_force = np.array(robot.get_current_force()[:3])
+            diff = np.linalg.norm(curr_force - prev_force)
+            print(diff)
+            if diff > 20:
+                robot.gripper.close()
+                cowsay.cow("closed")
+                break
+            else:
+                prev_force = curr_force
+                time.sleep(0.5)
+
+    return run_on_robot
+
+
+def run_recording(file_path, wrist_flip):
+    final_array = np.loadtxt(os.path.join("drive", file_path))
+    runtime = final_array[-1][0]
+
+    def run_on_robot(robot: UR5Robot):
+        move_to_start(robot, final_array[0], wrist_flip)
+        for i, arr in enumerate(tqdm(final_array)):
+            if i == 0:
+                continue
+            time_delta = final_array[i][0] - final_array[i - 1][0]
+            robot.servo_joint(arr[1:], time=time_delta)
+            current_time = time.time()
+            while time.time() - current_time < time_delta:
+                pass
+        robot.stop_joint()
+
+    return run_on_robot, runtime
+
+
+def teach_mode(num_sec: float, replay: [bool, int]):
+    def run_on_robot(robot: UR5Robot):
+        robot.start_teach()
+        time.sleep(num_sec)
+        robot.stop_teach()
+
+    return run_on_robot, num_sec
+
+
+# Testing
+# robot = UR5Robot()
+# wait_for_tap()(robot)

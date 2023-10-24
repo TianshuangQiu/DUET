@@ -4,6 +4,8 @@ import streamlit as st
 from streamlit_sortables import sort_items
 from copy import deepcopy
 import numpy as np
+from glob import glob
+import datetime
 import cowsay
 import pdb
 
@@ -46,7 +48,10 @@ def motif_variation(container: st.container, config: dict, name, key):
         if "params" not in config:
             config["params"] = {}
         for i, (k, v) in enumerate(parameters.items()):
-            value = container.slider(k, v[0], v[1], key=f"{key}_param_{i}")
+            if type(v[0]) is str:
+                value = container.selectbox(k, v, key=f"{key}_param_{i}")
+            else:
+                value = container.slider(k, v[0], v[1], key=f"{key}_param_{i}")
             config["params"][k] = value
     else:
         container.write("No editable parameters for this motif")
@@ -72,16 +77,20 @@ if not st.session_state["modifying"]:
         st.session_state["phase"] = 2
 
     if st.session_state["phase"] == 0:
-        file = st.file_uploader("Upload saved config file")
+        file_list = glob("save/*.json")
+        file = st.selectbox("Select a configuration file", file_list)
         upload = st.button("Upload")
-        make_new = st.button("Create new configuration instead")
+        make_new = st.button("Create new configuration")
 
         if upload:
-            st.session_state["config"], st.session_state["ordering"] = json.load(file)
+            with open(file, "r") as r:
+                st.session_state["config"], st.session_state["ordering"] = json.load(r)
             st.session_state["phase"] = 1
             st.rerun()
         if make_new:
+            # List of all motifs and their parameters
             st.session_state["config"] = {}
+            # List that describes the ordering
             st.session_state["ordering"] = []
             st.session_state["phase"] = 1
             st.rerun()
@@ -116,12 +125,26 @@ if not st.session_state["modifying"]:
     elif st.session_state["phase"] == 2:
         # Computing trajectory
         robot_ready_funcs = []
+        predicted_runtime = 0
         for o in st.session_state["ordering"]:
             curr_config_dict: dict = st.session_state["config"][o]
             kwargs = curr_config_dict.get("params", {})
             func = st.session_state["motif_func"][st.session_state["config"][o]["type"]]
-            robot_ready_funcs.append(func(**kwargs))
+            func_time_predict = st.session_state["motif_dict"][
+                st.session_state["config"][o]["type"]
+            ]["time"]
+            if type(func_time_predict) in [float, int]:
+                predicted_runtime += func_time_predict
+                robot_ready_funcs.append(func(**kwargs))
+            elif func_time_predict == "return_on_func":
+                # Some motifs have variable lengths depending on the parameter
+                rbt_func, runtime = func(**kwargs)
+                predicted_runtime += runtime
+                robot_ready_funcs.append(rbt_func)
+
         st.markdown("### Trajectory Computed")
+        predicted_runtime = str(datetime.timedelta(seconds=predicted_runtime))
+        st.markdown(f"#### Predicted Runtime is {predicted_runtime}")
         if "robot" not in st.session_state:
             connect = st.button("Connect to Robot")
             if connect:

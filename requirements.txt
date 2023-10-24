@@ -11,3 +11,4 @@ streamlit
 streamlit-sortables
 plotly
 networkx==2.5
+sympy

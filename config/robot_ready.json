@@ -5,7 +5,8 @@
                 0,
                 1
             ]
-        }
+        },
+        "time": 40
     },
     "cleaner_horizontal": {
         "params": {
@@ -71,7 +72,23 @@
             ]
         }
     },
+    "circle_vertical_gradual_increase": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
     "sweep_floor": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "sweep_floor_increasing": {
         "params": {
             "wrist_flip": [
                 0,
@@ -128,6 +145,14 @@
         }
     },
     "handing_object": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "vertical_lightbulb": {
         "params": {
             "wrist_flip": [
                 0,
@@ -198,5 +223,46 @@
                 1
             ]
         }
+    },
+    "run_recording": {
+        "params": {
+            "file_path": [
+                "IMG_4010.txt",
+                "IMG_4012.txt",
+                "IMG_4013.txt",
+                "IMG_4014.txt",
+                "IMG_4015.txt"
+            ],
+            "wrist_flip": [
+                0,
+                1
+            ]
+        },
+        "time": "return_on_func"
+    },
+    "random_yes_no": {
+        "params": {
+            "amount": [
+                1,
+                30
+            ],
+            "wrist_flip": [
+                0,
+                1
+            ]
+        }
+    },
+    "teach_mode": {
+        "params": {
+            "num_sec": [
+                30,
+                300
+            ],
+            "playback": [
+                0,
+                1
+            ]
+        },
+        "time": "return_on_func"
     }
 }
