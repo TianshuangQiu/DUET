@@ -1,1 +1,10 @@
-[{"yes": {"type": "yes", "params": {"param0": 0.0, "param1": 0.0, "amp": 0.74}}, "no2": {"type": "no", "params": {"param0": 0.0, "param1": 0.0, "amp": 0.84}}, "no": {"type": "no", "params": {"param0": 0.0, "param1": 0.0, "amp": 0.97}}}, ["yes", "no2", "no"]]
+[
+    {
+        "horizontal_circle": {},
+        "sweeping": {}
+    },
+    [
+        "horizontal_circle",
+        "sweeping"
+    ]
+]

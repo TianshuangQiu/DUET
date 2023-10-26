@@ -36,7 +36,7 @@ def move_to_start(robot: UR5Robot, next_pose, wrist_flip=False):
             intermediate_pose[-1] = round_nearest(
                 prev_pose[-1], np.pi, offset=np.pi / 2
             )
-            if intermediate_pose[-1] == 2 * np.pi:
+            if intermediate_pose[-1] >= 2 * np.pi:
                 intermediate_pose[-1] -= np.pi
             robot.move_joint(intermediate_pose, vel=1)
 
@@ -46,6 +46,8 @@ def move_to_start(robot: UR5Robot, next_pose, wrist_flip=False):
 
             # move to neutral position for wrist 2
             intermediate_pose[-1] = round_nearest(intermediate_pose[-2], np.pi)
+            if intermediate_pose[-1] >= 2 * np.pi:
+                intermediate_pose[-1] -= np.pi
             robot.move_joint(intermediate_pose, vel=1)
 
             # move to wrist 2 goal
@@ -75,9 +77,9 @@ def painter_vertical(wrist_flip: bool):
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
+            robot.servo_joint(arr, time=0.1)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            while time.time() - current_time < 0.1:
                 pass
         robot.stop_joint()
 
@@ -100,9 +102,9 @@ def cleaner_horizontal(wrist_flip: bool):
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
+            robot.servo_joint(arr, time=0.1)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            while time.time() - current_time < 0.1:
                 pass
         robot.stop_joint()
 
@@ -112,12 +114,10 @@ def cleaner_horizontal(wrist_flip: bool):
 def circle_horizontal(wrist_flip: bool):
     temp = []
     final_array = []
-    for x in np.arange(0, 120 * np.pi, np.pi / 40):
+    for x in np.arange(0, 32 * np.pi, np.pi / 40):
         temp.append(np.pi / 6 * math.cos(x) + np.pi)
         temp.append(np.pi / 10 * math.cos(x - np.pi / 2) - np.pi / 4)
-        temp.append(
-            np.pi / 4 * math.cos(x + np.pi / 2) - 7 * np.pi / 12
-        )  # + 7*np.pi/12
+        temp.append(np.pi / 4 * math.cos(x + np.pi / 2) + 7 * np.pi / 12)
         temp.append(np.pi / 12 * math.cos(x - np.pi / 2) + 1.15 * np.pi)
         temp.append(3 * np.pi / 2)
         temp.append(0)
@@ -127,9 +127,9 @@ def circle_horizontal(wrist_flip: bool):
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
+            robot.servo_joint(arr, time=0.05)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            while time.time() - current_time < 0.05:
                 pass
         robot.stop_joint()
 
@@ -152,9 +152,9 @@ def hammer_wall(wrist_flip: bool):
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
+            robot.servo_joint(arr, time=0.15)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            while time.time() - current_time < 0.15:
                 pass
         robot.stop_joint()
 
@@ -168,21 +168,21 @@ def hammer_floor(wrist_flip: bool):
     prev_x = 0
     rewind_shift = 0
     hammer_shift = 0
-    for x in np.arange(0, 100 * np.pi, np.pi / 8):
+    for x in np.arange(0, 116 * np.pi, np.pi / 8):
         temp.append(np.pi)
         temp.append(0)
-        if x - prev_x == np.pi:
-            grace = True
-            prev_x = x
-            rewind_shift += np.pi / 2
-            hammer_shift += np.pi
-        if grace and x - prev_x == 2 * np.pi:
-            grace = False
-            prev_x = x
-        if not grace:
-            temp.append(np.pi / 6 * math.cos(x - np.pi) - np.pi / 6)
-        else:
-            temp.append(np.pi / 6 * math.cos(0.5 * x - np.pi / 2) - np.pi / 6)
+        # if x - prev_x == np.pi:
+        #     grace = True
+        #     prev_x = x
+        #     rewind_shift += np.pi / 2
+        #     hammer_shift += np.pi
+        # if grace and x - prev_x == 2 * np.pi:
+        #     grace = False
+        #     prev_x = x
+        # if not grace:
+        temp.append(np.pi / 6 * math.cos(x - np.pi) - np.pi / 6)
+        # else:
+        #     temp.append(np.pi / 6 * math.cos(0.5 * x - np.pi / 2) - np.pi / 6)
         # temp.append(np.pi / 6 * math.cos(0.5*x-np.pi/2) - np.pi / 6)
         temp.append(3 * np.pi / 2)
         temp.append(3 * np.pi / 2)
@@ -193,9 +193,9 @@ def hammer_floor(wrist_flip: bool):
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
+            robot.servo_joint(arr, time=0.15)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            while time.time() - current_time < 0.15:
                 pass
         robot.stop_joint()
 
@@ -234,7 +234,7 @@ def screw_lightbulb(wrist_flip: bool):
 def waving(wrist_flip: bool):
     temp = []
     final_array = []
-    for x in np.arange(0, 8 * np.pi, np.pi / 40):
+    for x in np.arange(0, 17 * np.pi / 2, np.pi / 400):
         temp.append(np.pi / 2)
         temp.append(np.pi / 8 * math.cos(x) - np.pi / 2)
         temp.append(np.pi / 6 * math.cos(x - 0.5))
@@ -247,9 +247,9 @@ def waving(wrist_flip: bool):
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
+            robot.servo_joint(arr, time=0.01)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            while time.time() - current_time < 0.01:
                 pass
         robot.stop_joint()
 
@@ -272,9 +272,9 @@ def metronome(wrist_flip: bool):
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
+            robot.servo_joint(arr, time=0.1)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            while time.time() - current_time < 0.1:
                 pass
         robot.stop_joint()
 
@@ -297,9 +297,9 @@ def circle_vertical(wrist_flip: bool):
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
+            robot.servo_joint(arr, time=0.05)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            while time.time() - current_time < 0.05:
                 pass
         robot.stop_joint()
 
@@ -354,7 +354,9 @@ def circle_vertical_gradual_increase():
         robot.move_joint(final_array[0], vel=0.5)
         for i, arr in enumerate(tqdm(final_array)):
             robot.servo_joint(arr.tolist(), time=0.05)
-            time.sleep(0.05)
+            current_time = time.time()
+            while time.time() - current_time < 0.05:
+                pass
         robot.stop_joint()
 
     return run_on_robot
@@ -394,10 +396,12 @@ def sweep_floor(wrist_flip: bool):
 
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], True)
-        # for i, arr in enumerate(tqdm(final_array)):
-        #     robot.servo_joint(arr, time=0.05)
-        #     time.sleep(0.05)
-        robot.move_joint_path(final_array[::20], 0.7, 0.5, 0.5)
+        for i, arr in enumerate(tqdm(final_array)):
+            robot.servo_joint(arr, time=0.05)
+            current_time = time.time()
+            while time.time() - current_time < 0.05:
+                pass
+        # robot.move_joint_path(final_array[::20], 0.7, 0.5, 0.5)
         robot.stop_joint()
 
     return run_on_robot
@@ -428,7 +432,9 @@ def sweep_floor_increasing():
             count = 0
             for i, arr in enumerate(tqdm(final_array)):
                 robot.servo_joint(arr.tolist(), time=0.05)
-                time.sleep(0.05)
+                current_time = time.time()
+                while time.time() - current_time < 0.05:
+                    pass
                 if count == 2304:
                     robot.stop_joint()
                     robot.gripper.open()
@@ -455,14 +461,14 @@ def sweep_floor_panning():
     return final_array
 
 
-def yes(amp, wrist_flip: bool):
+def yes(wrist_flip: bool, amp, pan, length):
     final_array = []
     temp = []
-    for x in np.arange(0, 9 * np.pi / 2, np.pi / 40):
-        temp.append(np.pi)
+    for x in np.arange(0, length + np.pi / 40, np.pi / 40):
+        temp.append(pan)
         temp.append(-np.pi / 3)
         temp.append(np.pi / 4)
-        temp.append(amp * math.cos(x) + 7 * np.pi / 6)
+        temp.append(amp * math.cos(x) + 8 * np.pi / 7)
         temp.append(3 * np.pi / 2)
         temp.append(0)
         final_array.append(temp)
@@ -471,9 +477,9 @@ def yes(amp, wrist_flip: bool):
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
+            robot.servo_joint(arr, time=0.04)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            while time.time() - current_time < 0.04:
                 pass
         robot.stop_joint()
 
@@ -496,20 +502,20 @@ def pointing(wrist_flip: bool):  # 0.01
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
+            robot.servo_joint(arr, time=0.01)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            while time.time() - current_time < 0.01:
                 pass
         robot.stop_joint()
 
     return run_on_robot
 
 
-def no(amp, wrist_flip: bool):
+def no(wrist_flip: bool, amp, pan, length):
     final_array = []
     temp = []
-    for x in np.arange(0, 9 * np.pi / 2, np.pi / 40):
-        temp.append(np.pi)
+    for x in np.arange(0, length + np.pi / 40, np.pi / 40):
+        temp.append(pan)
         temp.append(-np.pi / 3)
         temp.append(np.pi / 4)
         temp.append(8 * np.pi / 7)
@@ -521,37 +527,62 @@ def no(amp, wrist_flip: bool):
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
+            robot.servo_joint(arr, time=0.04)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            while time.time() - current_time < 0.04:
                 pass
         robot.stop_joint()
 
     return run_on_robot
 
 
-def random_yes_no(amount: int, wrist_flip: bool):
+def random_yes_no(amount: int, in_place: int, wrist_flip: bool):
     amp_range = [0.2617, 1.047]
+    if in_place == 1:
+        pan_range = [np.pi, np.pi]
+    else:
+        pan_range = [0, 2 * np.pi]
+    length_range = [2 * np.pi, 9 * np.pi]
     funcs = []
     rand = np.random.random(amount)
     for i in range(amount):
         wf = i == 0 and wrist_flip
         if rand[i] < 0.5:
-            funcs.append(yes(np.random.uniform(amp_range[0], amp_range[1]), wf))
+            funcs.append(
+                yes(
+                    np.random.uniform(
+                        amp_range[0],
+                        amp_range[1],
+                        np.random.uniform(pan_range[0], pan_range[1]),
+                        np.random.uniform(length_range[0], length_range[1]),
+                    ),
+                    wf,
+                )
+            )
         else:
-            funcs.append(no(np.random.uniform(amp_range[0], amp_range[1]), wf))
+            funcs.append(
+                no(
+                    np.random.uniform(
+                        amp_range[0],
+                        amp_range[1],
+                        np.random.uniform(pan_range[0], pan_range[1]),
+                        np.random.uniform(length_range[0], length_range[1]),
+                    ),
+                    wf,
+                )
+            )
 
     def run_on_robot(robot: UR5Robot):
         for i, f in enumerate(funcs):
             f(robot)
 
-    return run_on_robot
+    return run_on_robot, amount * 4
 
 
-def horizontal_tag(wrist_flip: bool):  # add wrist flick up at each end
+def horizontal_tag(wrist_flip: bool, speed):  # add wrist flick up at each end
     final_array = []
     temp = []
-    for x in np.arange(0, 10 * np.pi, np.pi / 40):
+    for x in np.arange(0, 10 * np.pi, np.pi / 400):
         temp.append(np.pi / 2 * math.cos(x) + np.pi)
         temp.append(-0.08)
         temp.append(0)
@@ -564,9 +595,9 @@ def horizontal_tag(wrist_flip: bool):  # add wrist flick up at each end
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.1)
+            robot.servo_joint(arr, time=speed / 10)
             current_time = time.time()
-            while time.time() - current_time < 0.1:
+            while time.time() - current_time < speed / 10:
                 pass
         robot.stop_joint()
 
@@ -580,6 +611,10 @@ def random_pointing(
     temp = []
     w2s, w2i = get_line(2 * np.pi / 3, 5.63, 4 * np.pi / 3, 3.78)
     speed_up = False
+    if in_plane == 1:
+        in_plane = True
+    else:
+        in_plane = False
     if start_pause != end_pause:
         speed_up = True
     pause = start_pause
@@ -782,72 +817,8 @@ def handing_object(wrist_flip: bool):
     return run_on_robot
 
 
-def handing_object(wrist_flip: bool):
-    final_array = []
-    temp = []
-    # gripper = []
-    # lift = []
-    # elbow = []
-    # wrist1 = []
-    # wrist2 = []
-    # wrist3 = []
-    release = False
-    for i in range(5):
-        for x in np.arange(0, np.pi, np.pi / 40):
-            temp.append(np.pi)
-            temp.append(np.pi / 8 * math.cos(x - np.pi) - np.pi / 4)
-            temp.append(np.pi / 8 * math.cos(x) + np.pi / 4)
-            temp.append(5 * np.pi / 4)
-            temp.append(3 * np.pi / 2)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-            # if release:
-            #     gripper.append(0.5)
-            # else:
-            #     gripper.append(0)
-        for x in np.arange(0, np.pi / 2, np.pi / 40):
-            temp.append(np.pi)
-            temp.append(np.pi / 8 - np.pi / 4)
-            temp.append(-np.pi / 8 + np.pi / 4)
-            temp.append(5 * np.pi / 4)
-            temp.append(3 * np.pi / 2)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-            # if release:
-            #     gripper.append(0.25*math.cos(x) +0.25)
-            # else:
-            #     gripper.append(0.25*math.cos(x-np.pi) +0.25)
-        for x in np.arange(np.pi, 2 * np.pi, np.pi / 40):
-            temp.append(np.pi)
-            temp.append(np.pi / 8 * math.cos(x - np.pi) - np.pi / 4)
-            temp.append(np.pi / 8 * math.cos(x) + np.pi / 4)
-            temp.append(5 * np.pi / 4)
-            temp.append(3 * np.pi / 2)
-            temp.append(0)
-            final_array.append(temp)
-            temp = []
-            # if release:
-            #     gripper.append(0)
-            # else:
-            #     gripper.append(0.5)
-        # release = not release
-
-    def run_on_robot(robot: UR5Robot):
-        move_to_start(robot, final_array[0], wrist_flip)
-        for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
-            current_time = time.time()
-            while time.time() - current_time < 0.02:
-                pass
-        robot.stop_joint()
-
-    return run_on_robot
-
-
 # Copied-
-def vertical_lightbulb():
+def vertical_lightbulb(wrist_flip: bool):
     temp = []
     final_array = []
     offset = 0
@@ -866,8 +837,8 @@ def vertical_lightbulb():
     def run_on_robot(robot: UR5Robot):
         robot.move_joint(final_array[0], vel=0.5)  # added
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr.tolist(), time=0.03)
-            time.sleep(0.03)
+            robot.servo_joint(arr.tolist(), time=0.1)
+            time.sleep(0.1)
         robot.stop_joint()
 
     return run_on_robot
@@ -882,39 +853,41 @@ def stop_each_joint(
     # wrist2 = []
     temp = []
     final_array = []
-    for x in np.arange(0, 14 * np.pi, np.pi / 80):
-        if x >= 39.87:
+    for x in np.arange(0, 24 * np.pi, np.pi / 400):
+        if x >= 39.87 and x < 43.012:
             temp.append(np.pi / 2)
             temp.append(-np.pi / 2)
             temp.append(0)
-            temp.append(-np.pi / 2)
+            temp.append(3 * np.pi / 2)
             temp.append(3 * np.pi / 2)
             temp.append(0)
             final_array.append(temp)
             temp = []
-        elif x >= 27.304:
+        elif (x >= 27.304 and x < 39.87) or (x >= 43.012 and x < 52.436):
             temp.append(np.pi / 2)
             temp.append(-np.pi / 2)
             temp.append(0)
-            temp.append(np.pi / 4 * math.cos(x - 0.6) - np.pi / 2)
+            temp.append(np.pi / 4 * math.cos(x - 0.6) + 3 * np.pi / 2)
             temp.append(3 * np.pi / 2)
             temp.append(0)
             final_array.append(temp)
             temp = []
-        elif x >= 11 * np.pi / 2:
+        elif (x >= 11 * np.pi / 2 and x < 27.304) or (
+            x >= 52.436 and x < 39 * np.pi / 2
+        ):
             temp.append(np.pi / 2)
             temp.append(-np.pi / 2)
             temp.append(np.pi / 4 * math.cos(x - 0.6))
-            temp.append(np.pi / 4 * math.cos(x - 0.6) - np.pi / 2)
+            temp.append(np.pi / 4 * math.cos(x - 0.6) + 3 * np.pi / 2)
             temp.append(3 * np.pi / 2)
             temp.append(0)
             final_array.append(temp)
             temp = []
-        else:
+        elif x < 11 * np.pi / 2 or x >= 39 * np.pi / 2:
             temp.append(np.pi / 2)
             temp.append(np.pi / 3 * math.cos(x) - np.pi / 2)
             temp.append(np.pi / 4 * math.cos(x - 0.6))
-            temp.append(np.pi / 4 * math.cos(x - 0.6) - np.pi / 2)
+            temp.append(np.pi / 4 * math.cos(x - 0.6) + 3 * np.pi / 2)
             temp.append(3 * np.pi / 2)
             temp.append(0)
             final_array.append(temp)
@@ -923,9 +896,9 @@ def stop_each_joint(
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            robot.servo_joint(arr, time=0.01)
+            while time.time() - current_time < 0.01:
                 pass
         robot.stop_joint()
 
@@ -936,36 +909,36 @@ def waltz(wrist_flip: bool):
     temp = []
     final_array = []
     for i in range(10):
-        for x in np.arange(0, np.pi, np.pi / 40):
+        for x in np.arange(0, np.pi / 2, np.pi / 40):
             temp.append(np.pi / 2)
-            temp.append(np.pi / 6 * math.cos(x) - np.pi / 2)
+            temp.append(np.pi / 6 * math.cos(2 * x) - np.pi / 2)
             temp.append(0)
             temp.append(3 * np.pi / 2)
             temp.append(0)
             temp.append(0)
             final_array.append(temp)
             temp = []
-        for x in np.arange(0, np.pi, np.pi / 40):
+        for x in np.arange(0, 2 * np.pi / 3, np.pi / 40):
             temp.append(np.pi / 2)
-            temp.append(np.pi / 12 * math.cos(2 * x - np.pi) - 7 * np.pi / 12)
+            temp.append(np.pi / 12 * math.cos(3 * x - np.pi) - 7 * np.pi / 12)
             temp.append(0)
             temp.append(3 * np.pi / 2)
             temp.append(0)
             temp.append(0)
             final_array.append(temp)
             temp = []
-        for x in np.arange(0, np.pi, np.pi / 40):
+        for x in np.arange(np.pi / 2, np.pi, np.pi / 40):
             temp.append(np.pi / 2)
-            temp.append(np.pi / 6 * math.cos(x - np.pi) - np.pi / 2)
+            temp.append(np.pi / 6 * math.cos(2 * x) - np.pi / 2)
             temp.append(0)
             temp.append(3 * np.pi / 2)
             temp.append(0)
             temp.append(0)
             final_array.append(temp)
             temp = []
-        for x in np.arange(0, np.pi, np.pi / 40):
+        for x in np.arange(0, 2 * np.pi / 3, np.pi / 40):
             temp.append(np.pi / 2)
-            temp.append(np.pi / 12 * math.cos(2 * x) - 5 * np.pi / 12)
+            temp.append(np.pi / 12 * math.cos(3 * x) - 5 * np.pi / 12)
             temp.append(0)
             temp.append(3 * np.pi / 2)
             temp.append(0)
@@ -1083,14 +1056,14 @@ def bartender_pouring(wrist_flip: bool):
     return run_on_robot
 
 
-def box(wrist_flip: bool):
+def box(wrist_flip: bool, num_repeat):
     final_array = []
     temp = []
     # looking from back of robot
-    top_left = [3.66, -1.168, 0.981, 3.378, 4.236, 0]
-    top_right = [2.62, -1.168, 0.981, 3.378, 5.14, 0]
-    bottom_right = [2.62, -0.73, 1.544, 2.36, 5.14, 0]
-    bottom_left = [3.66, -0.73, 1.544, 2.36, 4.236, 0]
+    top_left = [5.23, -1.168, 0.981, 3.378, 4.236, 0]  # 3.66, 2.62
+    top_right = [4.19, -1.168, 0.981, 3.378, 5.14, 0]
+    bottom_right = [4.19, -0.73, 1.544, 2.36, 5.14, 0]
+    bottom_left = [5.23, -0.73, 1.544, 2.36, 4.236, 0]
     final_array.append(top_left)
     final_array.append(top_right)
     final_array.append(bottom_right)
@@ -1099,11 +1072,12 @@ def box(wrist_flip: bool):
 
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
-        for i, arr in enumerate(tqdm(final_array)):
-            robot.move_joint(arr, interp="tcp")
+        for j in range(num_repeat):
+            for i, arr in enumerate(tqdm(final_array)):
+                robot.move_joint(arr, interp="tcp")
         robot.stop_joint()
 
-    return run_on_robot
+    return run_on_robot, num_repeat * 5
 
 
 def bobbing_up_down(wrist_flip: bool):
@@ -1172,42 +1146,239 @@ def sawing(amp, wrist_flip: bool):
 
     return run_on_robot
 
-    # y1 = amp*math.cos((24*np.pi-np.pi/40)+np.pi) - np.pi/3
-    # y2 = amp*math.cos((24*np.pi-np.pi/40)) + np.pi/2
-    # y3 = 2*amp*math.cos(np.pi) - np.pi/3
-    # y4 = 2*amp*math.cos(0) + np.pi/2
-    # lift_slope, lift_intercept = get_line(0,y1, 2*np.pi, y3)
-    # elbow_slope, elbow_intercept = get_line(0, y2, 2*np.pi, y4)
 
-    # for x in np.arange(0, 2*np.pi, np.pi/40):
-    #     temp.append(np.pi)
-    #     temp.append(lift_slope*x + lift_intercept)
-    #     temp.append(elbow_slope*x + elbow_intercept)
-    #     temp.append(np.pi) #np.pi/48*math.cos(x) + 8*np.pi/9
-    #     temp.append(3*np.pi/2)
-    #     temp.append(0)
-    #     final_array.append(temp)
-    #     temp = []
+def tutting_in_place(num_repeat: int, wrist_flip: bool):
+    temp = []
+    final_array = []
+    # tut = lambda a: -np.pi / 20 * math.sin(a)
+    # pose = [np.pi, -np.pi / 2, np.pi / 2, 7 * np.pi / 6, 3 * np.pi / 2, 0]
+    # first pose
+    for i in range(num_repeat):
+        for x in np.arange(0, np.pi, np.pi / 80):
+            temp.append(-np.pi / 20 * math.sin(x) + np.pi)
+            temp.append(-np.pi / 2)
+            temp.append(np.pi / 2)
+            temp.append(7 * np.pi / 6)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        for x in np.arange(0, np.pi, np.pi / 80):
+            temp.append(np.pi)
+            temp.append(-np.pi / 20 * math.sin(x) - np.pi / 2)
+            temp.append(np.pi / 2)
+            temp.append(7 * np.pi / 6)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        for x in np.arange(0, np.pi, np.pi / 80):
+            temp.append(np.pi)
+            temp.append(-np.pi / 2)
+            temp.append(-np.pi / 20 * math.sin(x) + np.pi / 2)
+            temp.append(7 * np.pi / 6)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        for x in np.arange(0, np.pi, np.pi / 80):
+            temp.append(np.pi)
+            temp.append(-np.pi / 2)
+            temp.append(np.pi / 2)
+            temp.append(-np.pi / 20 * math.sin(x) + 7 * np.pi / 6)
+            temp.append(3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        for x in np.arange(0, np.pi, np.pi / 80):
+            temp.append(np.pi)
+            temp.append(-np.pi / 2)
+            temp.append(np.pi / 2)
+            temp.append(7 * np.pi / 6)
+            temp.append(-np.pi / 20 * math.sin(x) + 3 * np.pi / 2)
+            temp.append(0)
+            final_array.append(temp)
+            temp = []
+        for x in np.arange(0, np.pi, np.pi / 80):
+            temp.append(np.pi)
+            temp.append(-np.pi / 2)
+            temp.append(np.pi / 2)
+            temp.append(7 * np.pi / 6)
+            temp.append(3 * np.pi / 2)
+            temp.append(-np.pi / 20 * math.sin(x) + 0)
+            final_array.append(temp)
+            temp = []
 
-    # for x in np.arange(0,24*np.pi, np.pi/40):
-    #     temp.append(np.pi)
-    #     temp.append(2*amp*math.cos(0.9*x+np.pi)-np.pi/3)
-    #     temp.append(2*amp*math.cos(0.9*x)+np.pi/2)
-    #     temp.append(np.pi) #np.pi/48*math.cos(x) + 8*np.pi/9
-    #     temp.append(3*np.pi/2)
-    #     temp.append(0)
-    #     final_array.append(temp)
-    #     temp = []
     def run_on_robot(robot: UR5Robot):
         move_to_start(robot, final_array[0], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
-            robot.servo_joint(arr, time=0.02)
+            robot.servo_joint(arr, time=0.01)
             current_time = time.time()
-            while time.time() - current_time < 0.02:
+            while time.time() - current_time < 0.01:
+                pass
+        robot.stop_joint()
+
+    return run_on_robot, num_repeat * 4
+
+
+def tutting_growing(wrist_flip: bool):
+    temp = []
+    final_array = []
+    # tut = lambda a: -np.pi / 20 * math.sin(a)
+    # pose = [np.pi, -np.pi / 2, np.pi / 2, 7 * np.pi / 6, 3 * np.pi / 2, 0]
+    pan_offset = 0
+    lift_offset = 0
+    elbow_offset = 0
+    w1_offset = 0
+    w2_offset = 0
+    w3_offset = 0
+    prev_lift = 0
+    prev_w2 = 3 * np.pi / 2
+    for i in range(25):
+        mult = choice([-1, 1])
+        amp = -np.pi / 20 * mult
+        for x in np.arange(0, np.pi / 2, np.pi / 80):
+            temp.append(amp * math.sin(x) + np.pi + pan_offset)
+            temp.append(-np.pi / 2 + lift_offset)
+            temp.append(np.pi / 2 + elbow_offset)
+            temp.append(7 * np.pi / 6 + w1_offset)
+            temp.append(3 * np.pi / 2 + w2_offset)
+            temp.append(0 + w3_offset)
+            final_array.append(temp)
+            temp = []
+        pan_offset += amp
+
+        mult = choice([-1, 1])
+        if prev_lift < -2 * np.pi / 3:
+            mult = -1
+        elif prev_lift > 0:
+            mult = 1
+        amp = -np.pi / 20 * mult
+        for x in np.arange(0, np.pi / 2, np.pi / 80):
+            temp.append(np.pi + pan_offset)
+            temp.append(amp * math.sin(x) - np.pi / 2 + lift_offset)
+            temp.append(np.pi / 2 + elbow_offset)
+            temp.append(7 * np.pi / 6 + w1_offset)
+            temp.append(3 * np.pi / 2 + w2_offset)
+            temp.append(0 + w3_offset)
+            final_array.append(temp)
+            temp = []
+        prev_lift = amp - np.pi / 2 + lift_offset
+        lift_offset += amp
+
+        mult = choice([-1, 1])
+        amp = -np.pi / 20 * mult
+        for x in np.arange(0, np.pi / 2, np.pi / 80):
+            temp.append(np.pi + pan_offset)
+            temp.append(-np.pi / 2 + lift_offset)
+            temp.append(amp * math.sin(x) + np.pi / 2 + elbow_offset)
+            temp.append(7 * np.pi / 6 + w1_offset)
+            temp.append(3 * np.pi / 2 + w2_offset)
+            temp.append(0 + w3_offset)
+            final_array.append(temp)
+            temp = []
+        elbow_offset += amp
+
+        mult = choice([-1, 1])
+        amp = -np.pi / 20 * mult
+        for x in np.arange(0, np.pi / 2, np.pi / 80):
+            temp.append(np.pi + pan_offset)
+            temp.append(-np.pi / 2 + lift_offset)
+            temp.append(np.pi / 2 + elbow_offset)
+            temp.append(amp * math.sin(x) + 7 * np.pi / 6 + w1_offset)
+            temp.append(3 * np.pi / 2 + w2_offset)
+            temp.append(0 + w3_offset)
+            final_array.append(temp)
+            temp = []
+        w1_offset += amp
+
+        mult = choice([-1, 1])
+        if prev_w2 < np.pi:
+            mult = -1
+        elif prev_w2 > 2*np.pi:
+            mult = 1
+        amp = -np.pi / 20 * mult
+        for x in np.arange(0, np.pi / 2, np.pi / 80):
+            temp.append(np.pi + pan_offset)
+            temp.append(-np.pi / 2 + lift_offset)
+            temp.append(np.pi / 2 + elbow_offset)
+            temp.append(7 * np.pi / 6 + w1_offset)
+            temp.append(amp * math.sin(x) + 3 * np.pi / 2 + w2_offset)
+            temp.append(0 + w3_offset)
+            final_array.append(temp)
+            temp = []
+        prev_w2 = amp + 3 * np.pi / 2 + w2_offset
+        w2_offset += amp
+
+        mult = choice([-1, 1])
+        amp = -np.pi / 20 * mult
+        for x in np.arange(0, np.pi / 2, np.pi / 80):
+            temp.append(np.pi + pan_offset)
+            temp.append(-np.pi / 2 + lift_offset)
+            temp.append(np.pi / 2 + elbow_offset)
+            temp.append(7 * np.pi / 6 + w1_offset)
+            temp.append(3 * np.pi / 2 + w2_offset)
+            temp.append(amp * math.sin(x) + 0 + w3_offset)
+            final_array.append(temp)
+            temp = []
+        w3_offset += amp
+
+    def run_on_robot(robot: UR5Robot):
+        move_to_start(robot, final_array[0], wrist_flip)
+        for i, arr in enumerate(tqdm(final_array)):
+            robot.servo_joint(arr, time=0.01)
+            current_time = time.time()
+            while time.time() - current_time < 0.01:
                 pass
         robot.stop_joint()
 
     return run_on_robot
+
+
+# def tutting(wrist_flip: bool):
+#     temp = []
+#     final_array = []
+#     tut = lambda a: -np.pi / 20 * math.sin(a)
+#     pose = [np.pi, -np.pi / 2, np.pi / 2, 7 * np.pi / 6, 3 * np.pi / 2, 0]
+#     # first pose
+#     for x in np.arange(0, np.pi, np.pi / 80):
+#         temp.append(np.pi)
+#         temp.append(-np.pi / 2)
+#         temp.append(np.pi / 2)
+#         temp.append(7 * np.pi / 6)
+#         temp.append(3 * np.pi / 2)
+#         temp.append(0)
+#         final_array.append(temp)
+#         temp = []
+#     for i in range(6):
+#         for x in np.arange(0, 2 * np.pi, np.pi / 80):
+#             for j in range(6):
+#                 if i == j:
+#                     temp.append(pose[i] + tut(x))
+#                 else:
+#                     temp.append(pose[i])
+#             final_array.append(temp)
+#             temp = []
+#     for i in range(36):
+#         for x in np.arange(0, np.pi, np.pi / 80):
+#             for j in range(6):
+#                 if (i % 6) == j:
+#                     temp.append(pose[i%6] + tut(x))
+#                 else:
+#                     temp.append(pose[i%6])
+#             final_array.append(temp)
+#             temp = []
+
+#     def run_on_robot(robot: UR5Robot):
+#         move_to_start(robot, final_array[0], wrist_flip)
+#         for i, arr in enumerate(tqdm(final_array)):
+#             robot.servo_joint(arr, time=0.5)
+#             current_time = time.time()
+#             while time.time() - current_time < 0.5:
+#                 pass
+#         robot.stop_joint()
+
+#     return run_on_robot
 
 
 def tug_of_war(wrist_flip: bool):
@@ -1233,7 +1404,7 @@ def tug_of_war(wrist_flip: bool):
     return run_on_robot
 
 
-def wait_for_tap():
+def wait_for_tap(wrist_flip: bool):
     def run_on_robot(robot: UR5Robot):
         robot.change_gripper(2)
         current_pose = robot.get_pose(convert=False)
@@ -1247,6 +1418,7 @@ def wait_for_tap():
         prev_force = None
         robot.move_pose(current_pose, convert=False)
         robot.gripper.open()
+        time.sleep(0.5)
         while True:
             if prev_force is None:
                 prev_force = np.array(robot.get_current_force()[:3])
@@ -1270,7 +1442,7 @@ def run_recording(file_path, wrist_flip):
     runtime = final_array[-1][0]
 
     def run_on_robot(robot: UR5Robot):
-        move_to_start(robot, final_array[0], wrist_flip)
+        move_to_start(robot, final_array[0][1:], wrist_flip)
         for i, arr in enumerate(tqdm(final_array)):
             if i == 0:
                 continue
@@ -1284,15 +1456,39 @@ def run_recording(file_path, wrist_flip):
     return run_on_robot, runtime
 
 
-def teach_mode(num_sec: float, replay: [bool, int]):
+def teach_mode(num_sec: float, playback: [bool, int], wrist_flip: bool = False):
     def run_on_robot(robot: UR5Robot):
+        teach_start = np.array([94, -72, 134, 117, 270, 180]) * np.pi / 180
+        move_to_start(robot, teach_start, wrist_flip)
         robot.start_teach()
-        time.sleep(num_sec)
+        poses = []
+        for i in tqdm(range(int(num_sec / 0.002))):
+            last_record = time.time()
+            poses.append([i * 0.002, *robot.get_joints()])
+            while time.time() - last_record < 0.002:
+                pass
+        robot.force_mode(
+            robot.get_pose(convert=False),
+            [1, 1, 1, 1, 1, 1],
+            [0, 0, 0, 0, 0, 0],
+            2,
+            [np.pi, np.pi, np.pi, np.pi, np.pi, np.pi],
+            damping=0.2,
+        )
+        time.sleep(5)
+        robot.end_force_mode()
         robot.stop_teach()
+        if playback:
+            for i, p in enumerate(tqdm(poses)):
+                if i == 0:
+                    move_to_start(robot, p[1:], False)
+                    continue
+                last_record = time.time()
+                robot.servo_joint(p[1:], time=0.002, lookahead_time=0.2, gain=150)
+                while time.time() - last_record < 0.002:
+                    pass
+            robot.stop_joint()
 
+    if playback:
+        num_sec *= 2
     return run_on_robot, num_sec
-
-
-# Testing
-# robot = UR5Robot()
-# wait_for_tap()(robot)

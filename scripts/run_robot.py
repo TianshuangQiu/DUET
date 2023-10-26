@@ -19,6 +19,11 @@ if "modifying" not in st.session_state:
 if "motif_func" not in st.session_state or "motifs" not in st.session_state:
     with open("config/robot_ready.json", "r") as r:
         RBT_MOTIFS = json.load(r)
+    for k in list(RBT_MOTIFS.keys()):
+        if RBT_MOTIFS[k].get("time", -1) == "return_on_func":
+            continue
+        if RBT_MOTIFS[k].get("time", -1) < 0:
+            RBT_MOTIFS.pop(k)
     MOTIF_FUNCS = {}
     for k in RBT_MOTIFS.keys():
         MOTIF_FUNCS[k] = locals()[k]
@@ -43,18 +48,45 @@ def motif_variation(container: st.container, config: dict, name, key):
     )
     config["type"] = motif_type
 
+    misc_description = RBT_MOTIFS[motif_type].get("misc", None)
+    if RBT_MOTIFS[motif_type].get("misc", None) is not None:
+        st.markdown(f"#### Description: \n{misc_description}")
+
     if "params" in RBT_MOTIFS[motif_type]:
         parameters = RBT_MOTIFS[motif_type]["params"]
         if "params" not in config:
             config["params"] = {}
         for i, (k, v) in enumerate(parameters.items()):
             if type(v[0]) is str:
-                value = container.selectbox(k, v, key=f"{key}_param_{i}")
+                if k in config["params"]:
+                    k_idx = v.index(config["params"][k])
+                else:
+                    k_idx = 0
+                value = container.selectbox(k, v, key=f"{key}_param_{i}", index=k_idx)
             else:
-                value = container.slider(k, v[0], v[1], key=f"{key}_param_{i}")
+                value = container.slider(
+                    k,
+                    v[0],
+                    v[1],
+                    key=f"{key}_param_{i}",
+                    value=config["params"].get(k, v[0]),
+                )
             config["params"][k] = value
     else:
         container.write("No editable parameters for this motif")
+
+    # Somewhat hacky way of doing this, i heckin love higher order functions
+    func = st.session_state["motif_func"][motif_type]
+    t_config = st.session_state["motif_dict"][motif_type].get("time", -1)
+    if t_config == "return_on_func":
+        t = func(**config["params"])[1]
+    else:
+        t = t_config
+
+    if t > 0:
+        st.write(f"Current predicted runtime: {str(datetime.timedelta(seconds=t))}")
+    else:
+        st.warning("No predicted runtime for this")
 
     return modified_name, config
 
@@ -74,6 +106,8 @@ if not st.session_state["modifying"]:
     if one:
         st.session_state["phase"] = 1
     if two:
+        with open(f"save/AUTOSAVE.json", "w") as w:
+            json.dump((st.session_state["config"], st.session_state["ordering"]), w)
         st.session_state["phase"] = 2
 
     if st.session_state["phase"] == 0:
@@ -112,6 +146,8 @@ if not st.session_state["modifying"]:
                 st.rerun()
         edit = st.button("edit motif")
         if edit:
+            with open(f"save/AUTOSAVE.json", "w") as w:
+                json.dump((st.session_state["config"], st.session_state["ordering"]), w)
             if len(st.session_state["ordering"]) <= 1:
                 st.warning("Please insert more items first")
             else:
@@ -129,11 +165,20 @@ if not st.session_state["modifying"]:
         for o in st.session_state["ordering"]:
             curr_config_dict: dict = st.session_state["config"][o]
             kwargs = curr_config_dict.get("params", {})
-            func = st.session_state["motif_func"][st.session_state["config"][o]["type"]]
-            func_time_predict = st.session_state["motif_dict"][
-                st.session_state["config"][o]["type"]
-            ]["time"]
+            func_type = st.session_state["config"][o].get("type", None)
+            if func_type is None:
+                st.warning(f"{o}'s type is None, did you forget to edit it?")
+            func = st.session_state["motif_func"][func_type]
+            func_time_predict = st.session_state["motif_dict"][func_type].get(
+                "time", -1
+            )
             if type(func_time_predict) in [float, int]:
+                if func_time_predict == -1:
+                    func_time_predict = 0
+                    st.warning(
+                        f'{st.session_state["config"][o]["type"]} \
+                            does not have a time, predicted runtime may be off'
+                    )
                 predicted_runtime += func_time_predict
                 robot_ready_funcs.append(func(**kwargs))
             elif func_time_predict == "return_on_func":
@@ -155,9 +200,22 @@ if not st.session_state["modifying"]:
             robot: UR5Robot = st.session_state["robot"]
 
         execute = st.button("Execute")
-
+        try:
+            with open("save/exec_idx.txt", "r") as r:
+                idx = int(r.readline())
+        except:
+            idx = None
+            pass
+        execute_start = st.slider(
+            "Motif Start Index", 0, len(robot_ready_funcs) - 1, value=idx
+        )
+        st.write(f"Currently starting at {st.session_state['ordering'][execute_start]}")
         if execute:
-            for h in robot_ready_funcs:
+            for i, h in enumerate(robot_ready_funcs):
+                if i < execute_start:
+                    continue
+                with open("save/exec_idx.txt", "w") as w:
+                    w.write(str(i))
                 h(robot)
         save_file_name = st.text_input("Save Name", "tmp_save.json")
         save = st.button("Save Configuration")
@@ -180,6 +238,8 @@ else:
         commit = st.button("Commit changes")
         revert = st.button("Discard changes")
     if commit:
+        with open(f"save/AUTOSAVE.json", "w") as w:
+            json.dump((st.session_state["config"], st.session_state["ordering"]), w)
         st.session_state["modifying"] = False
         st.session_state.pop("backup")
         st.rerun()
