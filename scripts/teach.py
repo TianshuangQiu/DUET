@@ -4,8 +4,8 @@ import time
 from tqdm import tqdm
 import cowsay
 
-RECORD_TIME = 180
-FILE_PATH = "stare_down1_180.txt"
+RECORD_TIME = 120
+FILE_PATH = "same_point.txt"
 
 
 def play(robot: UR5Robot, poses, vel=0.5, acc=0.5, blend=0.1):

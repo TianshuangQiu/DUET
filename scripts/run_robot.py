@@ -233,7 +233,7 @@ else:
     with st.sidebar:
         st.markdown("# DUET")
         idx = st.slider(
-            "Index of motif to change", 0, len(st.session_state["config"]) - 1, 0
+            "Index of motif to change", 0, len(st.session_state["ordering"]) - 1, 0
         )
         commit = st.button("Commit changes")
         revert = st.button("Discard changes")
@@ -253,9 +253,13 @@ else:
     current_config_name = st.session_state["ordering"][idx]
     st.markdown(f"### Editing Motif")
     motif_container = st.container()
+    if current_config_name in st.session_state["config"]:
+        curr_config_dict = st.session_state["config"].pop(current_config_name)
+    else:
+        curr_config_dict = {}
     name, current_varation = motif_variation(
         motif_container,
-        st.session_state["config"].pop(current_config_name),
+        curr_config_dict,
         name=current_config_name,
         key="mot",
     )

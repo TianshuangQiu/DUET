@@ -85,6 +85,15 @@
         },
         "time": 382
     },
+    "circle_vertical_gradual_decrease": {
+        "params": {
+            "wrist_flip": [
+                0,
+                1
+            ]
+        },
+        "time": 382
+    },
     "sweep_floor": {
         "params": {
             "wrist_flip": [
@@ -114,12 +123,12 @@
                 1.047
             ],
             "pan": [
-                0,
+                0.0,
                 6.283
             ],
             "length": [
                 6.283,
-                28.274
+                43.98
             ]
         },
         "time": 4
@@ -144,12 +153,12 @@
                 1.047
             ],
             "pan": [
-                0,
+                0.0,
                 6.283
             ],
             "length": [
                 6.283,
-                28.274
+                43.98
             ]
         },
         "time": 4
@@ -157,7 +166,7 @@
     "horizontal_tag": {
         "params": {
             "speed": [
-                0.05,
+                0.07,
                 0.1
             ],
             "wrist_flip": [
@@ -228,18 +237,28 @@
             "wrist_flip": [
                 0,
                 1
+            ],
+            "is_fast": [
+                0,
+                1
             ]
         },
-        "time": 35
+        "time": 35,
+        "misc": "set is_fast to 1 for fast, and 0 for slow"
     },
     "bartender_pouring": {
         "params": {
             "wrist_flip": [
                 0,
                 1
+            ],
+            "is_fast": [
+                0,
+                1
             ]
         },
-        "time": 4
+        "time": 4,
+        "misc": "set is_fast to 1 for fast, and 0 for slow"
     },
     "box": {
         "params": {
@@ -281,7 +300,7 @@
                 1
             ]
         },
-        "time": 4
+        "time": "return_on_func"
     },
     "tutting_growing": {
         "params": {
@@ -290,7 +309,7 @@
                 1
             ]
         },
-        "time": 33
+        "time": 60
     },
     "tug_of_war": {
         "params": {
@@ -315,11 +334,21 @@
                 "crumple4.txt",
                 "float_and_stop.txt",
                 "float_and_stop1.txt",
+                "float_and_stop2_120.txt",
+                "float_and_stop3_120.txt",
                 "jump.txt",
+                "jump2_150.txt",
+                "jump3_150.txt",
+                "jump4_120.txt",
+                "jump5_240.txt",
+                "lyrical1_180.txt",
+                "lyrical2_180.txt",
+                "stare_down1_180.txt",
                 "music_change1.txt",
                 "teach1.txt",
                 "wave1.txt",
-                "wave2.txt"
+                "wave2.txt",
+                "same_point.txt"
             ],
             "wrist_flip": [
                 0,
@@ -330,21 +359,20 @@
     },
     "random_yes_no": {
         "params": {
+            "wrist_flip": [
+                0,
+                1
+            ],
             "amount": [
                 1,
-                30
+                100
             ],
             "in_place": [
                 0,
                 1
-            ],
-            "wrist_flip": [
-                0,
-                1
             ]
         },
-        "time": "return_on_func",
-        "misc": "plays the recorded motion"
+        "time": "return_on_func"
     },
     "teach_mode": {
         "params": {
