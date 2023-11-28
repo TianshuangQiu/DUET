@@ -40,7 +40,7 @@ def waving_1(wrist_flip: bool, time_interval, default_curve: bool = False):
             -np.pi / 4,
             -np.pi / 2,
             1.25 * np.pi,
-            1.5 * np.pi,
+            1.3 * np.pi,
             -0.5 * np.pi,
         ]
     )
@@ -50,18 +50,18 @@ def waving_1(wrist_flip: bool, time_interval, default_curve: bool = False):
             -0.75 * np.pi,
             0.5 * np.pi,
             0.75 * np.pi,
-            1.5 * np.pi,
+            1.7 * np.pi,
             0.5 * np.pi,
         ]
     )
     sub_start = np.array(
         [
             # wrist 2:
-            -0.5
+            1.3
             * np.pi
         ]
     )
-    sub_end = np.array([0.5 * np.pi])
+    sub_end = np.array([1.7 * np.pi])
 
     # supposing that the robot does not take time moving to starting position
     num_points = int(time_interval / 0.002)
@@ -74,7 +74,8 @@ def waving_1(wrist_flip: bool, time_interval, default_curve: bool = False):
     final_array = np.linspace(all_start, all_end, num_points)
     final_array = np.concatenate((final_array, final_array[::-1]), axis=0)
 
-    final_array[:, -1] = sub_array
+    #final_array[:, -1] = sub_array
+    final_array[:, -2] = sub_array
     # adding path back to initial position
 
     def run_on_robot(robot: UR5Robot):
@@ -96,3 +97,14 @@ def waving_1(wrist_flip: bool, time_interval, default_curve: bool = False):
         return run_default_on_robot
     else:
         return run_on_robot
+
+
+def detect_vr_tag():
+    pass
+
+
+def avoid_tag(*args, **kwargs):
+    detect_vr_tag()
+    pass
+
+

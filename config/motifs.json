@@ -170,5 +170,14 @@
         1.0
       ]
     }
+  },
+
+  "bartender_shake_pour": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
   }
 }
