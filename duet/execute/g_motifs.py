@@ -877,6 +877,45 @@ def horizontal_tag(speed):
 
     return run_on_robot
 
+def horizontal_tag_90(speed):
+    speed = float(speed)
+    final_array = []
+    temp = []
+    for x in np.arange(0, 10 * np.pi, np.pi / 50):
+        temp.append(np.pi / 2 * math.cos(x) + 3*np.pi/2)
+        temp.append(-2 * np.pi / 9)
+        temp.append(np.pi / 6)
+        temp.append(np.pi)
+        temp.append(3 * np.pi / 2)
+        temp.append(0)
+        final_array.append(temp)
+        temp = []
+
+    def run_on_robot(robot: UR5Robot, runtime: float):
+        start_time = time.time()
+        move_to_start(robot, final_array[0])
+
+        idx = 0
+        pbar = tqdm(total=runtime // speed)
+        while True:
+            robot.servo_joint(
+                final_array[idx % len(final_array)],
+                time=speed,
+                lookahead_time=0.2,
+                gain=500,
+            )
+            idx += 1
+            current_time = time.time()
+            while time.time() - current_time < speed:
+                pass
+            pbar.update()
+            if time.time() - start_time > runtime:
+                break
+        pbar.close()
+        robot.stop_joint()
+
+    return run_on_robot
+
 
 def random_pointing(in_plane, start_pause, end_pause):  # gripper CLOSED
     in_plane = int(in_plane)

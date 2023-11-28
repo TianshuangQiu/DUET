@@ -168,14 +168,16 @@
             "speed": [
                 0.07,
                 0.1
-            ],
-            "wrist_flip": [
-                0,
-                1
             ]
-        },
-        "time": 40,
-        "misc": "0.1 is the normal speed and 0.05 is the fast speed"
+        }
+    },
+    "horizontal_tag_90": {
+        "params": {
+            "speed": [
+                0.07,
+                0.1
+            ]
+        }
     },
     "random_pointing": {
         "params": {
