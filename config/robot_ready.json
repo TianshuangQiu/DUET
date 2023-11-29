@@ -168,14 +168,16 @@
             "speed": [
                 0.07,
                 0.1
-            ],
-            "wrist_flip": [
-                0,
-                1
             ]
-        },
-        "time": 40,
-        "misc": "0.1 is the normal speed and 0.05 is the fast speed"
+        }
+    },
+    "horizontal_tag_90": {
+        "params": {
+            "speed": [
+                0.07,
+                0.1
+            ]
+        }
     },
     "random_pointing": {
         "params": {
@@ -197,14 +199,6 @@
             ]
         },
         "time": 60
-    },
-    "handing_object": {
-        "params": {
-            "wrist_flip": [
-                0,
-                1
-            ]
-        }
     },
     "vertical_lightbulb": {
         "params": {
@@ -259,6 +253,9 @@
         },
         "time": 4,
         "misc": "set is_fast to 1 for fast, and 0 for slow"
+    },
+    "bartender_shake_pour": {
+        "params": {}
     },
     "box": {
         "params": {
@@ -336,7 +333,6 @@
                 "float_and_stop1.txt",
                 "float_and_stop2_120.txt",
                 "float_and_stop3_120.txt",
-                "jump.txt",
                 "jump2_150.txt",
                 "jump3_150.txt",
                 "jump4_120.txt",
@@ -389,11 +385,20 @@
     },
     "wait_for_tap": {
         "params": {
-            "wrist_flip": [
+            "temp": [
                 0,
                 1
             ]
         },
         "time": 1
+    },
+    "still": {
+        "params": {}
+    },
+    "waving_90": {
+        "params": {}
+    },
+    "open_gripper": {
+        "params": {}
     }
 }

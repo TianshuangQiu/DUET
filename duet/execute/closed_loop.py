@@ -19,7 +19,6 @@ def waving_1(wrist_flip: bool, time_interval, default_curve: bool = False):
             -np.pi / 4,
             -np.pi / 2,
             1.25 * np.pi,
-            #1.5 * np.pi,
             1.3 * np.pi,
             -0.5 * np.pi,
         ]
@@ -30,7 +29,7 @@ def waving_1(wrist_flip: bool, time_interval, default_curve: bool = False):
             -0.75 * np.pi,
             0.5 * np.pi,
             0.75 * np.pi,
-            #1.5 * np.pi,
+            #1.7 * np.pi,
             1.7 * np.pi,
             0.5 * np.pi,
         ]
@@ -102,6 +101,28 @@ def waving_1(wrist_flip: bool, time_interval, default_curve: bool = False):
         return run_default_on_robot
     else:
         return run_on_robot
+
+
+def detect_vr_tag():
+    pass
+
+
+def avoid_tag(*args, **kwargs):
+    detect_vr_tag()
+    pass
+
+
+
+
+def detect_vr_tag():
+    pass
+
+
+def avoid_tag(*args, **kwargs):
+    detect_vr_tag()
+    pass
+
+
 
 # For dancing to a song (with a file input)
 def get_bpm(file):
