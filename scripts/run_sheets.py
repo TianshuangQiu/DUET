@@ -1,4 +1,4 @@
-from duet.execute.g_motifs import *
+# from duet.execute.g_motifs import *
 import json
 from copy import deepcopy
 import numpy as np
@@ -43,13 +43,50 @@ robot = UR5Robot(ip="192.168.131.69", gripper=2)
 robot.set_playload(1)
 print("Enter to start")
 input()
+pdb.set_trace()
+sequence_df = sequence_df[idx:]
+
+#################### for recovery, if robot stops start at new index
+try:
+    with open("save/start_time.txt", "r") as start_time_file:
+        start_time = datetime.datetime.fromisoformat(start_time_file.readline().strip())
+except:
+    start_time = datetime.datetime.now()
+    with open("save/start_time.txt", "w") as st_file:
+        st_file.write(start_time.isoformat())
+
+
+def calculate_current_position(sequence_df, elapsed_time):
+    cumulative_time = 0
+    for index, row in sequence_df.iterrows():
+        cumulative_time = cumulative_time + float(row["Duration"])
+        if cumulative_time > elapsed_time:
+            remaining_time = cumulative_time - elapsed_time
+            return index, remaining_time
+    return len(sequence_df), 0
+
+
+curr_time = datetime.datetime.now()
+elapsed_time = (curr_time - start_time).total_seconds()
+new_idx, remaining_duration = calculate_current_position(sequence_df, elapsed_time)
+
+if new_idx != idx:
+    idx = new_idx
+    sequence_df = sequence_df[idx:]
+
+#################### Recovery-end
+
 # PUT FUNCS IN DICT
 
 index = idx
 while index < len(sequence_df):
     row = sequence_df.iloc[index]
     material_name = row["Material"]
-    duration = float(row["Duration"])
+    if index == idx:
+        duration = remaining_duration  # recovery
+    else:
+        duration = remaining_duration
+
     if duration < 0:
         duration = float("inf")
     if index + 1 < len(sequence_df):
