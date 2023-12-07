@@ -1,4 +1,4 @@
-# from duet.execute.g_motifs import *
+from duet.execute.g_motifs import *
 import json
 from copy import deepcopy
 import numpy as np
@@ -8,10 +8,12 @@ import cowsay
 import pandas as pd
 import pdb
 
-material_path = "/home/breath/DUET/save/Breathless Motif Sequences DUET - Material.csv"
+material_path = "/home/breath/DUET/save/Breathless Motif Sequences Sheet - Material.csv"
 material_df = pd.read_csv(material_path)
 
-sequence_path = "/home/breath/DUET/save/Breathless Motif Sequences DUET - Sequence-Evening - NEW.csv"
+sequence_path = (
+    "/home/breath/DUET/save/Breathless Motif Sequences Sheet - Sequence - Morning.csv"
+)
 sequence_df = pd.read_csv(sequence_path)
 
 with open("config/robot_ready.json", "r") as r:
@@ -43,7 +45,6 @@ robot = UR5Robot(ip="192.168.131.69", gripper=2)
 robot.set_playload(1)
 print("Enter to start")
 input()
-pdb.set_trace()
 sequence_df = sequence_df[idx:]
 
 #################### for recovery, if robot stops start at new index
@@ -84,8 +85,6 @@ while index < len(sequence_df):
     material_name = row["Material"]
     if index == idx:
         duration = remaining_duration  # recovery
-    else:
-        duration = remaining_duration
 
     if duration < 0:
         duration = float("inf")
