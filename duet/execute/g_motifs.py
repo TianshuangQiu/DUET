@@ -10,6 +10,9 @@ import sympy
 import time
 import datetime
 from random import choice, uniform
+from roboticstoolbox.tools.trajectory import quintic
+from roboticstoolbox.tools.trajectory import trapezoidal
+
 
 
 def get_line(x1, y1, x2, y2):
@@ -61,6 +64,36 @@ def move_to_start(robot: UR5Robot, next_pose, wrist_flip=False):
     # robot.move_pose(robot.get_fk(next_pose))
     robot.move_joint(next_pose)
 
+###### Helper Start
+def helper_move_start(robot: UR5Robot, prev_pose, next_pose, interval, wrist_flip=False):
+    num_points = int(interval / 0.002)
+    final_array = helper_trapezoidal(prev_pose, next_pose, num_points)
+    for i, arr in enumerate(tqdm(final_array)):
+        robot.servo_joint(arr, time=0.002, lookahead_time=0.2, gain=1000)
+        current_time = time.time()
+        while time.time() - current_time < 0.002:
+            pass
+        robot.stop_joint(5)
+
+def helper_quintic(ini_start, ini_end, num):
+    time = np.linspace(0, 1, num)
+    full_cycle_pos = np.zeros((num, 6))
+    for i in range(6):
+        trajectory = quintic(ini_start[i], ini_end[i], time)
+        positions = trajectory.q
+        full_cycle_pos[:, i] = positions
+    return full_cycle_pos
+
+
+def helper_trapezoidal(ini_start, ini_end, num):
+    time = np.linspace(0, 1, num)
+    full_cycle_pos = np.zeros((num, 6))
+    for i in range(6):
+        trajectory = trapezoidal(ini_start[i], ini_end[i], time)
+        positions = trajectory.q
+        full_cycle_pos[:, i] = positions
+    return full_cycle_pos
+###### Helper end
 
 def painter_vertical():
     final_array = []
