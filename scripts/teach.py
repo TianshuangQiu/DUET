@@ -4,8 +4,8 @@ import time
 from tqdm import tqdm
 import cowsay
 
-RECORD_TIME = 120
-FILE_PATH = "same_point.txt"
+RECORD_TIME = 180
+FILE_PATH = "jump0_60.txt"
 
 
 def play(robot: UR5Robot, poses, vel=0.5, acc=0.5, blend=0.1):
@@ -27,7 +27,7 @@ def servo(robot, poses, **kwargs):
 
 
 if __name__ == "__main__":
-    ur = UR5Robot()
+    ur = UR5Robot(ip="192.168.131.69", gripper=2)
     # ur.gripper.open()
     print(ur.get_pose())
     ur.start_teach()
@@ -43,10 +43,10 @@ if __name__ == "__main__":
         poses.append([i * 0.002, *ur.get_joints()])
         while time.time() - last_record < 0.002:
             pass
-        ur.gripper.open()
+        # ur.gripper.open()
     cowsay.cow("time's up!")
     poses = np.array(poses)
-    np.savetxt(f"/home/ethantqiu/DUET/drive/{FILE_PATH}", poses)
+    np.savetxt(f"/home/breath/DUET/drive/{FILE_PATH}", poses)
     ur.force_mode(
         ur.get_pose(convert=False),
         [1, 1, 1, 0, 0, 0],

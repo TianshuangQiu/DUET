@@ -8,10 +8,10 @@ import cowsay
 import pandas as pd
 import pdb
 
-material_path = "save/Breathless Motif Sequences DUET - Material.csv"
+material_path = "/home/breath/DUET/save/Breathless Motif Sequences DUET - Material.csv"
 material_df = pd.read_csv(material_path)
 
-sequence_path = "save/Breathless Motif Sequences DUET - Sequence-Evening.csv"
+sequence_path = "/home/breath/DUET/save/Breathless Motif Sequences DUET - Sequence-Evening - NEW.csv"
 sequence_df = pd.read_csv(sequence_path)
 
 with open("config/robot_ready.json", "r") as r:
@@ -39,19 +39,21 @@ try:
 except:
     idx = 0
 
-robot = UR5Robot(gripper=2)
+robot = UR5Robot(ip="192.168.131.69", gripper=2)
 robot.set_playload(1)
-pdb.set_trace()
-sequence_df = sequence_df[idx:]
+print("Enter to start")
+input()
 # PUT FUNCS IN DICT
-for index, row in sequence_df.iterrows():
-    # pdb.set_trace()
+
+index = idx
+while index < len(sequence_df):
+    row = sequence_df.iloc[index]
     material_name = row["Material"]
     duration = float(row["Duration"])
     if duration < 0:
         duration = float("inf")
-    if index - idx + 1 < len(sequence_df):
-        next_material = sequence_df.iloc[index - idx + 1]
+    if index + 1 < len(sequence_df):
+        next_material = sequence_df.iloc[index + 1]
     else:
         next_material = "END"
     print(
@@ -59,4 +61,21 @@ for index, row in sequence_df.iterrows():
     )
     with open("save/exec_idx.txt", "w") as w:
         w.write(str(index))
-    robot_ready_funcs[material_name](robot, duration)
+    try:
+        robot_ready_funcs[material_name](robot, duration)
+        index += 1
+    except:
+        print("Enter manual command")
+        robot.stop_joint()
+        debug_msg = input()
+        if debug_msg == "q":
+            raise
+        elif debug_msg == "c":
+            pass
+        elif debug_msg[0] == "+":
+            index += int(debug_msg[1:])
+        elif debug_msg[0] == "-":
+            index -= int(debug_msg[1:])
+        else:
+            print("Assuming that you have entered an integer")
+            index = int(debug_msg)

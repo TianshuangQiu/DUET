@@ -42,10 +42,10 @@ def move_to_start(robot: UR5Robot, next_pose, wrist_flip=False):
     potential_collision = np.logical_and(potential_collision, tmp_coll)
     poses = np.array(
         [
-            [np.pi, 1.5 * np.pi, 0.5 * np.pi],
-            [0, 1.5 * np.pi, 0.5 * np.pi],
+            [np.pi, 1.5 * np.pi, 0],
             [0, 1.5 * np.pi, 0],
-            [0, 0.5 * np.pi, 0],
+            [0, 1.5 * np.pi, 0.5 * np.pi],
+            [0, 0.5 * np.pi, 0.5 * np.pi],
         ]
     )
     if np.any(potential_collision):
@@ -365,6 +365,7 @@ def waving():
         robot.stop_joint()
 
     return run_on_robot
+
 
 def waving_90():
     temp = []
@@ -877,12 +878,13 @@ def horizontal_tag(speed):
 
     return run_on_robot
 
+
 def horizontal_tag_90(speed):
     speed = float(speed)
     final_array = []
     temp = []
     for x in np.arange(0, 10 * np.pi, np.pi / 50):
-        temp.append(np.pi / 2 * math.cos(x) + 3*np.pi/2)
+        temp.append(np.pi / 2 * math.cos(x) + 3 * np.pi / 2)
         temp.append(-2 * np.pi / 9)
         temp.append(np.pi / 6)
         temp.append(np.pi)
@@ -1094,7 +1096,6 @@ def vertical_lightbulb():
         start_time = time.time()
         move_to_start(robot, final_array[0])
 
-        robot.gripper.open()
         idx = 0
         pbar = tqdm(total=runtime // 0.1)
         while True:
@@ -1520,7 +1521,7 @@ def tutting_in_place():
                 temp.append(0)
                 final_array.append(temp)
                 temp = []
-        if count >=3:
+        if count >= 3:
             for x in np.arange(0, np.pi, np.pi / 80):
                 temp.append(np.pi)
                 temp.append(-np.pi / 2)
@@ -1530,7 +1531,7 @@ def tutting_in_place():
                 temp.append(0)
                 final_array.append(temp)
                 temp = []
-        if count >=4:
+        if count >= 4:
             for x in np.arange(0, np.pi, np.pi / 80):
                 temp.append(np.pi)
                 temp.append(-np.pi / 2)
@@ -1540,7 +1541,7 @@ def tutting_in_place():
                 temp.append(0)
                 final_array.append(temp)
                 temp = []
-        if count >=5:
+        if count >= 5:
             for x in np.arange(0, np.pi, np.pi / 80):
                 temp.append(np.pi)
                 temp.append(-np.pi / 2)
@@ -1550,7 +1551,7 @@ def tutting_in_place():
                 temp.append(-np.pi / 20 * math.sin(x) + 0)
                 final_array.append(temp)
                 temp = []
-        count+=1
+        count += 1
 
     def run_on_robot(robot: UR5Robot, runtime: float):
         start_time = time.time()
@@ -1585,7 +1586,7 @@ def tutting_growing():
     w2_offset = 0
     w3_offset = 0
     prev_lift = 0
-    prev_w1 = 7*np.pi/6
+    prev_w1 = 7 * np.pi / 6
     prev_w2 = 3 * np.pi / 2
     prev_elbow = np.pi / 2
     w1_mult = 1
@@ -1605,7 +1606,7 @@ def tutting_growing():
         pan_offset += amp
 
         mult = choice([-1, 1])
-        if prev_lift < -135*np.pi/180:  # need a check for value of prev_elbow
+        if prev_lift < -135 * np.pi / 180:  # need a check for value of prev_elbow
             mult = 1
         elif prev_lift > -np.pi / 4:  # need a check for value of prev_elbow
             mult = -1
@@ -1761,7 +1762,7 @@ def wait_for_tap():
 def open_gripper():
     def run_on_robot(robot: UR5Robot, runtime: float, **kwargs):
         robot.gripper.open()
-        time.sleep(1)
+        time.sleep(3)
 
     return run_on_robot
 
@@ -1782,8 +1783,8 @@ def run_recording(file_path):
             current_time = time.time()
             while time.time() - current_time < time_delta:
                 pass
-            if time.time() - start_time > runtime:
-                break
+            # if time.time() - start_time > runtime:
+            #     break
         robot.stop_joint()
 
     return run_on_robot
@@ -1803,7 +1804,7 @@ def teach_mode(num_sec: float, playback: [bool, int], **kwargs):
             poses.append([i * 0.002, *robot.get_joints()])
             while time.time() - last_record < 0.002:
                 pass
-        np.savetxt("/home/ethantqiu/DUET/drive/TMP_SAVE.txt", poses)
+        np.savetxt("/home/breath/DUET/drive/TMP_SAVE.txt", poses)
         robot.force_mode(
             robot.get_pose(convert=False),
             [1, 1, 1, 1, 1, 1],

@@ -1,7 +1,6 @@
 urx
 numpy==1.20
 pandas==1.4
-scipy==1.7
 # torch
 matplotlib
 tqdm
