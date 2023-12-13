@@ -1,0 +1,183 @@
+{
+  "filler": {
+    "params": {
+      "param0": [
+        0.0,
+        10.0
+      ],
+      "param1": [
+        0.0,
+        10.0
+      ]
+    }
+  },
+
+  "circle_horizontal": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "painter_vertical": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "cleaner_horizontal": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "hammer_wall": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+  
+  "screw_lightbulb": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "waving": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "metronome": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "sweep_floor": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "yes": {
+    "params": {
+      "amp": [
+        0.2617,
+        1.047
+      ],
+      "pan": [
+        0,
+        6.283
+      ],
+      "length": [
+        6.283,
+        28.274
+      ]
+    }
+  },
+
+  "no": {
+    "params": {
+      "amp": [
+        0.2617,
+        1.047
+      ],
+      "pan": [
+        0,
+        6.283
+      ],
+      "length": [
+        6.283,
+        28.274
+      ]
+    }
+  },
+
+  "pointing": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "horizontal_tag": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "handing_object": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "stop_each_joint": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "waltz": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "random_pointing": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+
+  "bartender_shake_pour": {
+    "params": {
+      "param0": [
+        0.0,
+        1.0
+      ]
+    }
+  }
+}

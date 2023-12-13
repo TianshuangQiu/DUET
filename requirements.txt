@@ -1,11 +1,15 @@
+urx
 numpy==1.20
-pandas
+pandas==1.4
 # torch
 matplotlib
 tqdm
 cowsay
 urdfpy
 streamlit
+streamlit-sortables
 plotly
 pyvista
 stpyvista
+networkx==2.5
+sympy
