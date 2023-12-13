@@ -7,3 +7,5 @@ cowsay
 urdfpy
 streamlit
 plotly
+pyvista
+stpyvista
